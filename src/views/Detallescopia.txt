@@ -1,0 +1,374 @@
+<template>
+  <div class="flex min-h-screen bg-slate-50 font-sans relative overflow-x-hidden">
+    
+   <transition name="drawer-left">
+      <aside v-if="drawerSolicitud" class="fixed left-0 top-0 h-screen w-[480px] bg-white border-r border-slate-200 shadow-2xl z-[60] flex flex-col p-10 overflow-y-auto">
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <span class="text-[9px] font-black text-rosa-comp uppercase tracking-[0.4em]">Gestión de Errores</span>
+            <h2 class="text-2xl font-black text-slate-800 tracking-tighter uppercase mt-1">Corrección Dinámica</h2>
+          </div>
+          <button @click="drawerSolicitud = false" class="p-2 hover:bg-slate-50 rounded-xl transition-all">✕</button>
+        </div>
+
+        <div class="space-y-6">
+          <div class="space-y-3">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">¿Dónde está el error?</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button 
+                v-for="cat in categoriasError" :key="cat.id"
+                @click="seleccionarCategoria(cat)"
+                :class="['p-4 rounded-2xl text-[9px] font-black uppercase tracking-widest border transition-all text-center', 
+                         categoriaSeleccionada?.id === cat.id ? 'bg-rosa-comp text-white border-rosa-comp shadow-lg shadow-rosa-comp/20' : 'bg-slate-50 text-slate-400 border-slate-100 hover:border-rosa-comp/30']"
+              >
+                {{ cat.nombre }}
+              </button>
+            </div>
+          </div>
+
+          <hr class="border-slate-50" />
+
+          <div v-if="categoriaSeleccionada" class="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+            
+            <div v-if="['id', 'ingreso'].includes(categoriaSeleccionada.id)" class="space-y-4">
+              <div v-for="campo in categoriaSeleccionada.campos" :key="campo.key" class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">{{ campo.label }}</label>
+                <input 
+                  v-model="formEdicion.campos_nuevos[campo.key]" 
+                  type="text" 
+                  :placeholder="`Nuevo valor para ${campo.label}...`"
+                  class="w-full bg-slate-50 border-2 border-transparent rounded-2xl p-4 text-xs font-black uppercase focus:border-rosa-comp/20 outline-none transition-all"
+                />
+              </div>
+            </div>
+
+            <div v-if="categoriaSeleccionada.id === 'mecanica'" class="grid grid-cols-2 gap-4">
+              <div v-for="campo in categoriaSeleccionada.campos" :key="campo.key" class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-2">{{ campo.label }}</label>
+                <select v-model="formEdicion.campos_nuevos[campo.key]" class="w-full bg-slate-50 border-none rounded-xl p-4 text-[10px] font-black uppercase outline-none">
+                  <option v-for="opt in campo.opciones" :key="opt" :value="opt">{{ opt }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div v-if="['danos', 'objetos'].includes(categoriaSeleccionada.id)" class="space-y-4">
+               <p class="text-[10px] font-bold text-slate-400 italic">Describe el elemento que falta o que debe corregirse:</p>
+               <textarea v-model="formEdicion.valor_nuevo" rows="4" class="w-full bg-slate-50 border-none rounded-[2rem] p-6 text-sm outline-none resize-none" placeholder="Ej: Faltó registrar un rayón en puerta derecha..."></textarea>
+            </div>
+
+            <div class="pt-4 border-t border-slate-50 space-y-6">
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Justificación Técnica</label>
+                <textarea v-model="formEdicion.justificacion" rows="3" class="w-full bg-slate-100/50 border-none rounded-3xl p-6 text-sm outline-none italic" placeholder="¿Por qué se requiere este cambio?"></textarea>
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Foto Probatoria (Opcional)</label>
+                <div class="border-2 border-dashed border-slate-100 rounded-[2.5rem] p-6 text-center hover:bg-slate-50 transition-all cursor-pointer relative">
+                  <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="handleEvidencia" />
+                  <div v-if="!evidenciaPreview" class="flex flex-col items-center">
+                    <PhotoIcon class="w-6 h-6 text-slate-200 mb-1" />
+                    <span class="text-[9px] font-black text-slate-300 uppercase">Adjuntar Evidencia</span>
+                  </div>
+                  <img v-else :src="evidenciaPreview" class="w-full h-32 object-cover rounded-2xl shadow-md" />
+                </div>
+              </div>
+
+              <button @click="enviarSolicitud" class="w-full py-6 bg-rosa-comp text-white rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] shadow-xl shadow-rosa-comp/20 active:scale-95 transition-all">
+                Enviar Solicitud de Edición
+              </button>
+            </div>
+
+          </div>
+
+          <div v-else class="py-20 text-center space-y-4 opacity-30">
+            <MagnifyingGlassIcon class="w-12 h-12 mx-auto text-slate-200" />
+            <p class="text-[10px] font-black uppercase tracking-[0.2em]">Selecciona un área para comenzar</p>
+          </div>
+        </div>
+      </aside>
+    </transition>
+    
+    <div :class="['transition-all duration-500 flex-1 p-4 md:p-10 space-y-10', drawerInspeccion ? 'mr-[400px]' : 'mr-0', drawerSolicitud ? 'ml-[450px]' : 'ml-0']">
+      <div class="max-w-7xl mx-auto">
+        
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6 border-b border-slate-100 pb-8">
+          <div>
+            <span class="text-[10px] font-black text-rosa-comp uppercase tracking-[0.3em]">Expediente Digital de Unidad</span>
+            <h1 class="text-4xl font-black text-slate-800 tracking-tighter uppercase mt-2">
+              {{ vehiculo.marca }} {{ vehiculo.modelo }} <span class="text-slate-300 font-light">{{ vehiculo.anio }}</span>
+            </h1>
+            <p class="text-slate-400 font-medium text-sm mt-1 italic">Folio de Ingreso: <span class="text-primario font-black">{{ ingreso.folio }}</span></p>
+          </div>
+
+          <div class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-xl flex items-center gap-8 relative overflow-hidden group">
+            <div class="text-center border-r border-slate-100 pr-8">
+              <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">Días en Sede</p>
+              <p class="text-4xl font-black text-slate-800 tracking-tighter">{{ diasEnSede }}</p>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 px-3 py-1.5 bg-green-50 text-green-600 rounded-xl text-[9px] font-black uppercase border border-green-100">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                {{ vehiculo.estatus_actual }}
+              </div>
+              <div class="flex gap-2">
+                <button v-if="auth.rol === 'OPERADOR'" @click="drawerSolicitud = !drawerSolicitud" :class="['p-2 rounded-xl transition-all shadow-sm', drawerSolicitud ? 'bg-rosa-comp text-white' : 'bg-rosa-comp/10 text-rosa-comp hover:bg-rosa-comp hover:text-white']">
+                  <PencilSquareIcon class="w-5 h-5" />
+                </button>
+                <button v-if="auth.rol === 'ADMIN'" @click="drawerInspeccion = !drawerInspeccion" :class="['p-2 rounded-xl transition-all shadow-sm', drawerInspeccion ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-800 hover:text-white']">
+                  <ClipboardDocumentCheckIcon class="w-5 h-5" />
+                </button>
+                <button class="p-2 bg-slate-100 text-slate-400 rounded-xl hover:bg-slate-200 shadow-sm">
+                  <DocumentArrowDownIcon class="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10">
+          <div class="md:col-span-3 aspect-video bg-white rounded-[2.5rem] p-2 border border-slate-100 shadow-sm group overflow-hidden">
+            <img :src="fotoPrincipal" class="w-full h-full object-cover rounded-[2rem] transition-transform duration-700 group-hover:scale-105" />
+          </div>
+          <div class="md:col-span-2 grid grid-cols-2 gap-4">
+            <div v-for="(img, key) in galeriaFija" :key="key" @click="fotoPrincipal = img" class="bg-white p-1.5 rounded-3xl border border-slate-100 shadow-sm cursor-pointer hover:ring-2 hover:ring-primario transition-all overflow-hidden group">
+              <img :src="img" class="w-full h-full object-cover rounded-2xl opacity-80 group-hover:opacity-100" />
+            </div>
+          </div>
+        </section>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+          <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
+            <h3 class="text-[10px] font-black text-rosa-comp uppercase tracking-[0.3em] mb-8">Información del Ingreso</h3>
+            <div class="grid grid-cols-2 gap-y-8 gap-x-6">
+              <div v-for="(val, label) in infoIngreso" :key="label">
+                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">{{ label }}</p>
+                <p class="text-xs font-black text-slate-700 uppercase leading-tight">{{ val }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
+            <h3 class="text-[10px] font-black text-primario uppercase tracking-[0.3em] mb-8">Identificación de Unidad</h3>
+            <div class="grid grid-cols-2 gap-y-8 gap-x-6">
+              <div v-for="(val, label) in infoVehiculo" :key="label">
+                <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">{{ label }}</p>
+                <p class="text-xs font-black text-slate-700 uppercase tracking-tight">{{ val }}</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8">Estatus Mecánico & Niveles</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div v-for="(val, label) in infoMecanica" :key="label" class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
+                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">{{ label }}</p>
+                <span :class="['text-[10px] font-black px-3 py-1 rounded-full uppercase', val === 'Bueno' || val === 'Lleno' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600']">
+                  {{ val }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2">
+            <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 ml-6">Objetos Personales</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div v-for="obj in objetos" :key="obj.id" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-4">
+                <div class="w-16 h-16 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100">
+                  <img :src="obj.foto" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <p class="text-xs font-black text-slate-700 uppercase">{{ obj.descripcion }}</p>
+                  <p class="text-[9px] font-bold text-slate-400 uppercase mt-1">{{ obj.cantidad }} pza • {{ obj.estado }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="danos.length > 0" class="lg:col-span-2 bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
+            <h3 class="text-[10px] font-black text-red-400 uppercase tracking-[0.3em] mb-8">Daños Detectados</h3>
+            <div class="space-y-6">
+              <div v-for="dano in danos" :key="dano.id" class="flex gap-6 p-6 bg-red-50/30 rounded-[2rem] border border-red-100/50">
+                <div class="w-32 h-24 rounded-2xl overflow-hidden shadow-sm">
+                  <img :src="dano.foto" class="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <p class="text-xs font-black text-red-600 uppercase mb-2">{{ dano.parte }}</p>
+                  <p class="text-sm text-slate-600 italic font-medium">"{{ dano.descripcion }}"</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-2 bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm">
+            <h3 class="text-[10px] font-black text-slate-800 uppercase tracking-[0.3em] mb-8">Línea de Tiempo</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="text-[9px] font-black text-slate-300 uppercase tracking-widest border-b border-slate-50">
+                    <th class="pb-4">Evento</th>
+                    <th class="pb-4">Usuario</th>
+                    <th class="pb-4 text-right">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                  <tr v-for="log in bitacora" :key="log.id">
+                    <td class="py-4">
+                      <p class="text-xs font-black text-slate-700 uppercase leading-none">{{ log.tipo }}</p>
+                      <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">{{ log.desc }}</p>
+                    </td>
+                    <td class="py-4 text-[10px] font-bold text-slate-400 uppercase italic">@{{ log.user }}</td>
+                    <td class="py-4 text-right text-[10px] font-black text-slate-500">{{ log.fecha }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <transition name="drawer">
+      <aside v-if="drawerInspeccion" class="fixed right-0 top-0 h-screen w-[400px] bg-white border-l border-slate-200 shadow-2xl z-50 flex flex-col p-10 overflow-y-auto">
+        <div class="flex justify-between items-start mb-10">
+          <div>
+            <span class="text-[9px] font-black text-primario uppercase tracking-[0.4em]">Panel de Auditoría</span>
+            <h2 class="text-2xl font-black text-slate-800 tracking-tighter uppercase mt-1">Inspección Administrativa</h2>
+          </div>
+          <button @click="drawerInspeccion = false" class="p-2 hover:bg-slate-50 rounded-xl transition-all">✕</button>
+        </div>
+
+        <div class="space-y-10">
+          <div class="space-y-4">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Validación Física</label>
+            <div v-for="check in checksInspeccion" :key="check.model" class="flex items-center justify-between p-5 bg-slate-50 rounded-3xl border border-slate-100">
+              <span class="text-[10px] font-black text-slate-600 uppercase">{{ check.label }}</span>
+              <button @click="formInspeccion[check.model] = !formInspeccion[check.model]" :class="['w-10 h-5 rounded-full relative transition-all', formInspeccion[check.model] ? 'bg-green-400' : 'bg-slate-200']">
+                <div :class="['absolute top-1 w-3 h-3 bg-white rounded-full transition-all shadow-sm', formInspeccion[check.model] ? 'left-6' : 'left-1']"></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Resultado</label>
+            <div class="grid grid-cols-1 gap-3">
+              <button v-for="res in RESULTADOS_INS" :key="res.value" @click="formInspeccion.resultado = res.value" :class="['py-4 px-6 rounded-2xl text-[9px] font-black uppercase border-2 transition-all text-left flex justify-between items-center', formInspeccion.resultado === res.value ? 'bg-slate-800 border-slate-800 text-white shadow-xl' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200']">
+                {{ res.label }}
+                <div v-if="formInspeccion.resultado === res.value" class="w-2 h-2 bg-green-400 rounded-full"></div>
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Observaciones</label>
+            <textarea v-model="formInspeccion.obs" rows="5" class="w-full bg-slate-50 border-none rounded-[2rem] p-8 text-sm outline-none resize-none" placeholder="Comentarios..."></textarea>
+          </div>
+
+          <button class="w-full py-6 bg-slate-800 text-white rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl hover:bg-slate-900 transition-all">
+            Confirmar Dictamen
+          </button>
+        </div>
+      </aside>
+    </transition>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import { 
+  PencilSquareIcon, 
+  ExclamationTriangleIcon, 
+  PhotoIcon,
+  ClipboardDocumentCheckIcon,
+  DocumentArrowDownIcon, MagnifyingGlassIcon
+} from '@heroicons/vue/24/outline'
+
+const auth = useAuthStore()
+const drawerSolicitud = ref(false)
+const drawerInspeccion = ref(false)
+const fotoPrincipal = ref('https://images.unsplash.com/photo-1590362891175-9a744426d6b2?auto=format&fit=crop&q=80&w=1000')
+
+// --- LÓGICA DE SOLICITUD ---
+// --- LÓGICA DINÁMICA DE SOLICITUD ---
+const categoriaSeleccionada = ref(null)
+const evidenciaPreview = ref(null)
+
+const categoriasError = [
+  { 
+    id: 'id', 
+    nombre: 'Identificación', 
+    campos: [
+      { label: 'Placas', key: 'placas' },
+      { label: 'Número de Serie (VIN)', key: 'num_serie' },
+      { label: 'Número de Motor', key: 'numero_motor' }
+    ]
+  },
+  { 
+    id: 'mecanica', 
+    nombre: 'Niveles/Mecánica', 
+    campos: [
+      { label: 'Estatus Motor', key: 'estado_motor', opciones: ['BUENO', 'REGULAR', 'MALO', 'DAÑADO'] },
+      { label: 'Nivel Combustible', key: 'estatus_combustible', opciones: ['LLENO', 'MEDIO', 'BAJO', 'VACIO'] },
+      { label: 'Estatus Aceite', key: 'estatus_aceite_motor', opciones: ['LLENO', 'MEDIO', 'BAJO', 'VACIO'] }
+    ]
+  },
+  { id: 'ingreso', nombre: 'Datos Ingreso', campos: [{ label: 'Autoridad', key: 'autoridad_ingreso' }, { label: 'Motivo', key: 'motivo_ingreso' }] },
+  { id: 'danos', nombre: 'Daños Físicos' },
+  { id: 'objetos', nombre: 'Objetos Personales' },
+  { id: 'fotos', nombre: 'Fotos de Evidencia' }
+]
+
+const formEdicion = ref({
+  campos_nuevos: {}, // Aquí guardaremos los pares clave-valor dinámicos
+  justificacion: '',
+  valor_nuevo: '', // Para descripciones largas de daños/objetos
+  evidencia: null
+})
+
+const seleccionarCategoria = (cat) => {
+  categoriaSeleccionada.value = cat
+  formEdicion.value.campos_nuevos = {} // Reset al cambiar categoría
+}
+
+const handleEvidencia = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    evidenciaPreview.value = URL.createObjectURL(file)
+    formEdicion.value.evidencia = file
+  }
+}
+
+const enviarSolicitud = () => {
+  console.log("Datos a enviar:", formEdicion.value)
+  alert('Solicitud enviada correctamente.')
+  // Aquí dispararías el axios.post con la data dinámica
+}
+
+// --- DATA SIMULADA ---
+const vehiculo = ref({ marca: "TOYOTA", modelo: "HILUX", anio: 2022, plaques: "XAB-92-12", num_serie: "7G56S46548X", estatus_actual: "EN DEPÓSITO" })
+const ingreso = ref({ folio: "SMyT-2026-0412", fecha: "09 MAR 2026" })
+const diasEnSede = ref(45)
+
+const infoIngreso = computed(() => ({ "Folio": ingreso.value.folio, "Autoridad": "Policía Estatal", "Servicio": "Particular", "Motivo": "Accidente", "Lugar": "Apizaco-Tlaxcala", "Factura": "Presente" }))
+const infoVehiculo = computed(() => ({ "VIN": vehiculo.value.num_serie, "Motor": "46S46448S4-Z", "Color Original": "Blanco", "Color Actual": "Blanco Perla", "Tipo": "Pick-up", "Propietario": "Juan Pérez" }))
+const infoMecanica = computed(() => ({ "Carrocería": "Bueno", "Motor": "Bueno", "Transmisión": "Auto", "KM": "65,000", "Aceite": "Medio", "Gas": "1/4", "Anticongelante": "Lleno", "Airbags": "Intactas" }))
+const objetos = ref([{ id: 1, descripcion: "Gato Hidráulico", cantidad: 1, estado: "Bueno", foto: "https://picsum.photos/seed/tool/200" }])
+const danos = ref([{ id: 1, parte: "Defensa", descripcion: "Golpe frontal 15%", foto: "https://picsum.photos/seed/damage/200" }])
+const bitacora = ref([{ id: 1, tipo: "Ingreso", desc: "Registro inicial", user: "operador_tlx", fecha: "09/03/2026" }])
+const galeriaFija = { frontal: "https://images.unsplash.com/photo-1590362891175-9a744426d6b2?w=400", interior: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=400", lat: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400", capo: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400" }
+
+// --- INSPECCIÓN ---
+const formInspeccion = ref({ ident_ok: true, inv_ok: true, fis_ok: true, doc_ok: true, resultado: 'APROBADO', obs: '' })
+const checksInspeccion = [{ model: 'ident_ok', label: 'Datos ID' }, { model: 'inv_ok', label: 'Inventario' }, { model: 'fis_ok', label: 'Daños' }, { model: 'doc_ok', label: 'Documentos' }]
+const RESULTADOS_INS = [{ value: 'APROBADO', label: 'Aprobado' }, { value: 'RECHAZADO', label: 'Rechazado' }, { value: 'OBSERVADO', label: 'Aprobado con Obs.' }]
+
+
+</script>
+
+<style scoped>
+.drawer-left-enter-active, .drawer-left-leave-active { transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+.drawer-left-enter-from, .drawer-left-leave-to { transform: translateX(-100%); }
+.drawer-enter-active, .drawer-leave-active { transition: transform 0.4s ease; }
+.drawer-enter-from, .drawer-leave-to { transform: translateX(100%); }
+</style>

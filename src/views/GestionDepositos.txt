@@ -1,0 +1,377 @@
+<template>
+  <div class="p-4 md:p-10 space-y-8 bg-white min-h-screen">
+    <div class="max-w-7xl mx-auto">
+      
+      <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+          <span class="text-[10px] font-black text-rosa-comp uppercase tracking-[0.2em]">Administración Central</span>
+          <h1 class="text-4xl font-black text-slate-800 tracking-tighter uppercase">Gestión de Depósitos</h1>
+          <p class="text-slate-500 text-sm font-medium mt-1">Configuración y monitoreo de la red estatal</p>
+        </div>
+
+        <button 
+          @click="mostrarModal = true"
+          class="flex items-center justify-center bg-primario text-white px-8 py-4 rounded-3xl hover:scale-105 transition-all shadow-lg shadow-primario/20 font-black text-[10px] uppercase tracking-widest gap-2"
+        >
+          <PlusIcon class="w-5 h-5" /> Agregar Depósito
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-4xl border border-slate-100 shadow-sm">
+        <div class="relative">
+          <MagnifyingGlassIcon class="w-5 h-5 absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input v-model="search" type="text" placeholder="Buscar por nombre o responsable..." class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-[11px] font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primario/20 transition-all" />
+        </div>
+
+        <div class="flex items-center gap-3 px-4 bg-slate-50 rounded-2xl">
+          <span class="text-[9px] font-black text-slate-400 uppercase">Estatus:</span>
+          <select v-model="filtroEstatus" class="bg-transparent border-none flex-1 py-4 text-[10px] font-black uppercase outline-none">
+            <option value="TODOS">TODOS</option>
+            <option value="ACTIVO">ACTIVO</option>
+            <option value="SUSPENDIDO">SUSPENDIDO</option>
+            <option value="PAUSADO">PAUSADO</option>
+          </select>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center gap-3 px-6 py-2 bg-slate-50 rounded-2xl border border-transparent focus-within:border-primario/10 transition-all">
+            <span class="text-[9px] font-black text-slate-400 uppercase whitespace-nowrap">Unidades:</span>
+            
+            <div class="flex items-center gap-2">
+                <input 
+                v-model.number="filtroMin" 
+                type="number" 
+                placeholder="Mín" 
+                class="w-16 bg-white border-none rounded-lg px-2 py-2 text-[10px] font-black text-center text-slate-700 outline-none focus:ring-2 focus:ring-primario/20"
+                />
+                <span class="text-slate-300 text-xs">─</span>
+                <input 
+                v-model.number="filtroMax" 
+                type="number" 
+                placeholder="Máx" 
+                class="w-16 bg-white border-none rounded-lg px-2 py-2 text-[10px] font-black text-center text-slate-700 outline-none focus:ring-2 focus:ring-primario/20"
+                />
+            </div>
+
+            <button 
+                @click="limpiarRango" 
+                class="text-[9px] font-black text-slate-400 hover:text-red-400 uppercase tracking-tighter"
+            >
+                Limpiar
+            </button>
+            </div> </div>
+
+      <div class="bg-white border border-slate-100 rounded-[2.5rem] shadow-sm overflow-hidden">
+        <table class="min-w-full divide-y divide-slate-100">
+          <thead class="bg-slate-50/50">
+            <tr>
+              <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Nombre del Corralón</th>
+              <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Responsable</th>
+              <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Unidades Activas</th>
+              <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Estatus</th>
+              <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50">
+            <tr v-for="dep in filteredDepositos" :key="dep.id" class="hover:bg-slate-50/80 transition-colors group">
+              <td class="px-8 py-6">
+                <div class="flex flex-col">
+                  <span class="text-sm font-black text-slate-800">{{ dep.nombre }}</span>
+                  <span class="text-[10px] text-slate-400 font-bold truncate max-w-xs">{{ dep.ubicacion }}</span>
+                </div>
+              </td>
+              <td class="px-8 py-6">
+                <span class="text-[11px] font-black text-slate-600 uppercase">{{ dep.concesionario_responsable }}</span>
+              </td>
+              <td class="px-8 py-6 text-center">
+                <div class="inline-flex items-center justify-center px-4 py-1.5 bg-slate-100 rounded-full">
+                  <span class="text-xs font-black text-slate-800">{{ dep.total_unidades }}</span>
+                </div>
+              </td>
+              <td class="px-8 py-6">
+                <span :class="claseEstatus(dep.estatus_deposito)" class="px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border">
+                  {{ dep.estatus_deposito }}
+                </span>
+              </td>
+              <td class="px-8 py-6 text-center">
+                <button @click="verDetalles(dep.id)" class="p-2.5 text-slate-400 hover:text-primario hover:bg-primario/5 rounded-xl transition-all border border-slate-100 shadow-sm group-hover:border-primario/20">
+                  <EyeIcon class="w-5 h-5" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div v-if="filteredDepositos.length === 0" class="text-center py-20">
+           <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">No se encontraron depósitos con estos filtros</p>
+        </div>
+      </div>
+
+      <div v-if="mostrarModal" class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
+        <div class="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+          <div class="p-10">
+            <div class="flex justify-between items-center mb-8">
+              <div>
+                <span class="text-[9px] font-black text-primario uppercase tracking-[0.3em]">Configuración de Red</span>
+                <h2 class="text-2xl font-black text-slate-800 tracking-tighter uppercase mt-1">Nuevo Depósito</h2>
+              </div>
+              <button @click="mostrarModal = false" class="text-slate-300 hover:text-red-500 transition-colors text-xl">✕</button>
+            </div>
+
+            <form @submit.prevent="crearDeposito" class="space-y-6">
+              <div class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Nombre del Corralón *</label>
+                <input v-model="nuevoDep.nombre" type="text" required class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primario/20 outline-none font-bold text-slate-700" placeholder="Ej. Depósito Regional Tlaxcala">
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Ubicación / Dirección *</label>
+                <textarea v-model="nuevoDep.ubicacion" required rows="2" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primario/20 outline-none font-bold text-slate-700 resize-none" placeholder="Dirección completa..."></textarea>
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Concesionario Responsable *</label>
+                <input v-model="nuevoDep.concesionario_responsable" type="text" required class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primario/20 outline-none font-bold text-slate-700" placeholder="Nombre del titular">
+              </div>
+
+              <div class="space-y-2">
+                <label class="text-[9px] font-black text-slate-400 uppercase ml-2 tracking-widest">Estado Inicial</label>
+                <select v-model="nuevoDep.estatus_deposito" class="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primario/20 outline-none font-black text-[10px] uppercase tracking-widest">
+                  <option value="ACTIVO">ACTIVO</option>
+                  <option value="SUSPENDIDO">SUSPENDIDO</option>
+                  <option value="PAUSADO">PAUSADO</option>
+                </select>
+              </div>
+
+              <button type="submit" :disabled="loading" class="w-full bg-primario text-white font-black py-5 rounded-3xl mt-4 hover:shadow-2xl hover:shadow-primario/30 transition-all uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-2">
+                <span v-if="loading" class="animate-spin text-lg">◌</span>
+                {{ loading ? 'Sincronizando...' : 'Dar de Alta Depósito' }}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import clienteAxios from '../api/axios'
+import { PlusIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+// --- ESTADOS ---
+const sedes = ref([])        // Esta es nuestra lista maestra de corralones
+const search = ref('')       // Buscador de texto
+const filtroEstatus = ref('TODOS')
+const loading = ref(false)
+const mostrarModal = ref(false)
+
+// Filtros de Rango (Ocupación)
+const filtroMin = ref(null)
+const filtroMax = ref(null)
+
+const nuevoDep = ref({
+  nombre: '',
+  ubicacion: '',
+  concesionario_responsable: '',
+  estatus_deposito: 'ACTIVO'
+})
+
+// --- CARGAR DATOS ---
+const cargarDatos = async () => {
+  try {
+    // Solo pedimos depósitos porque el Serializer ya trae el conteo de unidades
+    const res = await clienteAxios.get('depositos/')
+    sedes.value = res.data
+  } catch (e) {
+    console.error("Error cargando depósitos:", e)
+  }
+}
+
+// --- LÓGICA DE FILTRADO ---
+const filteredDepositos = computed(() => {
+  return sedes.value.filter(s => {
+    const query = search.value.toLowerCase()
+    
+    // 1. Filtro por nombre o concesionario (Blindado contra nulos)
+    const matchesSearch = 
+      (s.nombre?.toLowerCase() || '').includes(query) || 
+      (s.concesionario_responsable?.toLowerCase() || '').includes(query)
+
+    // 2. Filtro por Estatus (ACTIVO/SUSPENDIDO)
+    const matchesEstatus = filtroEstatus.value === 'TODOS' || s.estatus_deposito === filtroEstatus.value
+
+    // 3. Filtro por Rango de Ocupación (Usando total_unidades del Backend)
+    const unidades = s.total_unidades || 0
+    const matchesMin = filtroMin.value === null || filtroMin.value === '' || unidades >= filtroMin.value
+    const matchesMax = filtroMax.value === null || filtroMax.value === '' || unidades <= filtroMax.value
+
+    return matchesSearch && matchesEstatus && matchesMin && matchesMax
+  })
+})
+
+// --- ACCIONES ---
+const crearDeposito = async () => {
+  loading.value = true
+  try {
+    await clienteAxios.post('depositos/', nuevoDep.value)
+    mostrarModal.value = false
+    nuevoDep.value = { nombre: '', ubicacion: '', concesionario_responsable: '', estatus_deposito: 'ACTIVO' }
+    await cargarDatos() // Refrescamos la lista
+  } catch (e) {
+    alert('Error al registrar el depósito.')
+  } finally {
+    loading.value = false
+  }
+}
+
+const limpiarRango = () => {
+  filtroMin.value = null
+  filtroMax.value = null
+}
+
+const verDetalles = (id) => {
+  localStorage.setItem('deposito_ver_id', id)
+  router.push('/DetallesDeposito')
+}
+
+const claseEstatus = (estatus) => {
+  switch(estatus) {
+    case 'ACTIVO': return 'bg-green-50 text-green-600 border-green-100'
+    case 'SUSPENDIDO': return 'bg-red-50 text-red-600 border-red-100'
+    default: return 'bg-amber-50 text-amber-600 border-amber-100'
+  }
+}
+
+onMounted(cargarDatos)
+</script>
+
+<script setup>/*
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
+import clienteAxios from '../api/axios'
+import { PlusIcon, EyeIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
+
+const auth = useAuthStore()
+const router = useRouter()
+
+// Nuevos estados para el rango
+const filtroMin = ref(null)
+const filtroMax = ref(null)
+
+// Función para resetear el rango
+const limpiarRango = () => {
+  filtroMin.value = null
+  filtroMax.value = null
+}
+
+
+
+
+// Estados
+const listaDepositos = ref([])
+const listaIngresos = ref([]) // Para contar unidades
+const search = ref('')
+const filtroEstatus = ref('TODOS')
+const filtroOcupacion = ref('TODOS')
+const mostrarModal = ref(false)
+const loading = ref(false)
+
+const nuevoDep = ref({
+  nombre: '',
+  ubicacion: '',
+  concesionario_responsable: '',
+  estatus_deposito: 'ACTIVO'
+})
+
+// Cargar Datos
+const cargarDatos = async () => {
+  try {
+    const [resDeps, resIngresos] = await Promise.all([
+      clienteAxios.get('depositos/'),
+      clienteAxios.get('ingresos/')
+    ])
+    listaDepositos.value = resDeps.data
+    listaIngresos.value = resIngresos.data
+  } catch (e) {
+    console.error("Error cargando depósitos:", e)
+  }
+}
+
+// Función para contar unidades activas por depósito
+/*
+const contarUnidades = (depId) => {
+  return listaIngresos.value.filter(i => i.deposito == depId && i.vehiculo?.estatus_actual === 'DENTRO').length
+}*/
+
+
+
+// Lógica de Filtrado
+/*
+const filteredDepositos = computed(() => {
+  return listaDepositos.value.filter(d => {
+    const searchLower = search.value.toLowerCase()
+    const unidades = contarUnidades(d.id)
+
+    // 1. Filtro de Texto
+    const matchesSearch = d.nombre.toLowerCase().includes(searchLower) || 
+                         d.concesionario_responsable.toLowerCase().includes(searchLower)
+
+    // 2. Filtro de Estatus
+    const matchesEstatus = filtroEstatus.value === 'TODOS' || d.estatus_deposito === filtroEstatus.value
+
+    // 3. Filtro de Ocupación Dinámico (NUEVO)
+    const matchesMin = filtroMin.value === null || filtroMin.value === '' || unidades >= filtroMin.value
+    const matchesMax = filtroMax.value === null || filtroMax.value === '' || unidades <= filtroMax.value
+
+    return matchesSearch && matchesEstatus && matchesMin && matchesMax
+  })
+})*/ /*
+const sedes = ref([]) 
+const search = ref('')
+const filteredDepositos = computed(() => {
+  if (!search.value) return sedes.value
+  
+  const query = search.value.toLowerCase()
+  return sedes.value.filter(s => 
+    (s.nombre?.toLowerCase() || '').includes(query) ||
+    (s.ubicacion?.toLowerCase() || '').includes(query)
+  )
+})
+
+const crearDeposito = async () => {
+  loading.value = true
+  try {
+    await clienteAxios.post('depositos/', nuevoDep.value)
+    mostrarModal.value = false
+    nuevoDep.value = { nombre: '', ubicacion: '', concesionario_responsable: '', estatus_deposito: 'ACTIVO' }
+    await cargarDatos()
+  } catch (e) {
+    alert('Error al registrar el depósito.')
+  } finally {
+    loading.value = false
+  }
+}
+
+const verDetalles = (id) => {
+  localStorage.setItem('deposito_ver_id', id)
+  router.push('/DetallesDeposito') // O el nombre de tu ruta
+}
+
+const claseEstatus = (estatus) => {
+  switch(estatus) {
+    case 'ACTIVO': return 'bg-green-50 text-green-600 border-green-100'
+    case 'SUSPENDIDO': return 'bg-red-50 text-red-600 border-red-100'
+    default: return 'bg-amber-50 text-amber-600 border-amber-100'
+  }
+}
+
+onMounted(cargarDatos) */
+</script>

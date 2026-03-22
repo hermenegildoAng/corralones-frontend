@@ -1,0 +1,31 @@
+const routes = [
+  { path: '/', component: Login, meta: { hideSidebar: true } },
+
+  { path: '/inventario', component: Inventario, meta: { requiresAuth: true } },
+  { path: '/dashopera', component: DashOpeView, meta: { requiresAuth: true } },
+  { path: '/edicionregistro', component: SolicitudEdicion, meta: { requiresAuth: true } },
+  { path: '/registrar', component: Registrar, meta: { requiresAuth: true } },
+  { path: '/detalles', component: Detalles, meta: { requiresAuth: true } },
+  { path: '/bitacora', component: Bitacora, meta: { requiresAuth: true } },
+  { path: '/dashboard-global', component: DashboardGlobal, meta: { requiresAuth: true } },
+  { path: '/usuarios', name: 'UsuariosGestion', component: UsuariosGestion, meta: { requiresAuth: true } },
+  { path: '/GestionSoli', component: GestionSoliAdmin, meta: { requiresAuth: true } },
+  { path: '/dashadmin', component: DashAdmin, meta: { requiresAuth: true } },
+  { path: '/solicitudes-operador', component: SolicitudesOpe, meta: { requiresAuth: true } },
+  { path: '/nuevaInspeccion', component: NuevaInspeccion, meta: { requiresAuth: true }},
+  { path: '/GestionInspecciones', component: GestionInspecciones,meta: { requiresAuth: true } },
+
+  // 🔥 dinámicos
+  { path: '/Detallesauto/:id', component: Detallesauto, meta: { requiresAuth: true } },
+  { path: '/usuario/:id', name: 'DetallesUser', component: DetallesUser, meta: { requiresAuth: true } },
+  { path: '/deposito/:id?', name: 'DetallesDeposito', component: DetallesDeposito, meta: { requiresAuth: true } },
+
+  { path: '/MisSolicitudes', component: MisSolicitudes, meta: { requiresAuth: true } },
+  { path: '/MisInspecciones', component: MisInspecciones, meta: { requiresAuth: true } },
+  { path: '/GestionDepositos', component: GestionDepositos, meta: { requiresAuth: true } },
+  { path: '/Editperfil', component: Editperfil, meta: { requiresAuth: true } },
+
+  // lazy
+  { path: '/forgot-password', component: () => import('./views/ForgotPassword.vue'),meta: { hideSidebar: true}},
+  { path: '/reset-password/:uid/:token', component: () => import('./views/ResetPassword.vue'),meta: { hideSidebar: true} },
+]
