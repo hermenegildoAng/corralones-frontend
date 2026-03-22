@@ -583,7 +583,7 @@
 <script setup>
 
 import { useAuthStore } from '../stores/auth'
-import CodigoQr from '../components/CodigoQr.vue'
+import CodigoQr from '../components/CodigoQR.vue'
 import {ArrowLeftIcon, PencilSquareIcon, ClipboardDocumentCheckIcon,
    DocumentArrowDownIcon, MagnifyingGlassPlusIcon, ScaleIcon, PhotoIcon, DocumentTextIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline'
 
