@@ -130,49 +130,7 @@
       </div>
 
       <!-- Sin resultados -->
-      <div v-if="actividadReciente.length === 0" class="py-12 flex flex-col items-center justify-center gap-4">
-        <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center">
-          <ClipboardDocumentCheckIcon class="w-5 h-5 text-slate-300" />
-        </div>
-        <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Sin actividad reciente</p>
-      </div>
-
-      <div v-else class="overflow-x-auto">
-        <table class="w-full text-left min-w-150">
-          <thead>
-            <tr class="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50">
-              <th class="px-6 py-4 rounded-l-2xl">Operación</th>
-              <th class="px-6 py-4">Acción</th>
-              <th class="px-6 py-4">Detalle</th>
-              <th class="px-6 py-4 text-right rounded-r-2xl">Fecha y Hora</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-50">
-            <tr v-for="reg in actividadReciente" :key="reg.id" class="hover:bg-slate-50/50 transition-colors">
-              <td class="px-6 py-5">
-                <div class="flex items-center gap-3">
-                  <div :class="['p-2 rounded-lg', chipCategoria(reg.categoria).bg]">
-                    <component :is="chipCategoria(reg.categoria).icon" class="w-4 h-4" :class="chipCategoria(reg.categoria).color" />
-                  </div>
-                  <span class="text-xs font-black text-slate-700 uppercase">{{ reg.accion }}</span>
-                </div>
-              </td>
-              <td class="px-6 py-5">
-                <span :class="['px-3 py-1 text-[8px] font-black uppercase tracking-widest rounded-full border', chipCategoria(reg.categoria).badge]">
-                  {{ reg.categoria }}
-                </span>
-              </td>
-              <td class="px-6 py-5 max-w-48">
-                <span class="text-[10px] font-bold text-slate-400 uppercase line-clamp-1">{{ reg.detalle }}</span>
-              </td>
-              <td class="px-6 py-5 text-right">
-                <p class="text-[10px] font-black text-slate-600 uppercase">{{ reg.fecha }}</p>
-                <p class="text-[9px] font-bold text-slate-400 uppercase italic">{{ reg.hora }}</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+     
 
       
 
