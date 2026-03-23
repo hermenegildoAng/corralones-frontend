@@ -67,7 +67,7 @@
           <span>Mis Solicitudes</span>
           <router-link to="/MisSolicitudes" class="text-primario hover:underline ml-2">Ver todas &rarr;</router-link>
         </h3>
-        <p class="text-5xl font-black text-slate-800 tracking-tighter mb-6">12</p>
+        <p class="text-5xl font-black text-slate-800 tracking-tighter mb-6">{{conteoSolicitudes}}</p>
         
         <div class="grid grid-cols-3 gap-2 mt-auto">
           <div class="bg-amber-50 rounded-xl p-3 text-center border border-amber-100">

@@ -389,7 +389,7 @@ const guardarUsuario = async () => {
   const datosAEnviar = { ...nuevoUsuario.value }
   if (datosAEnviar.rol === 'SUPER') datosAEnviar.id_deposito = null
   if (!datosAEnviar.email?.trim()) datosAEnviar.email = null
-  if (editandoId.value && !datosAEnviar.password) delete datosAEnviar.password
+  if (editandoId.value && !datosAEnviar.password) delete datosAEnviar.password  
 
   console.log('Enviando:', JSON.stringify(datosAEnviar))  // ← agregar
   console.log('ID a editar:', editandoId.value)    // ← antes del try
