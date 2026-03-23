@@ -174,7 +174,7 @@
         </table>
       </div>
 
-    
+      
 
   <!-- Sin resultados -->
   <div v-if="actividadReciente.length === 0" class="py-12 flex flex-col items-center justify-center gap-4">
