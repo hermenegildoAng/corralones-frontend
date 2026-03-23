@@ -118,6 +118,7 @@
 
     <!-- ACTIVIDAD RECIENTE -->
     <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-sm">
+
       <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-6 border-b border-slate-50 gap-4">
         <div>
           <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Actividad Reciente</h3>
@@ -172,6 +173,160 @@
           </tbody>
         </table>
       </div>
+
+    
+
+  <!-- Sin resultados -->
+  <div v-if="actividadReciente.length === 0" class="py-12 flex flex-col items-center justify-center gap-4">
+    <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center">
+      <ClipboardDocumentCheckIcon class="w-5 h-5 text-slate-300" />
     </div>
+    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Sin actividad reciente</p>
+  </div>
+
+  <div v-else class="overflow-x-auto">
+    <table class="w-full text-left min-w-150">
+      <thead>
+        <tr class="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50">
+          <th class="px-6 py-4 rounded-l-2xl">Operación</th>
+          <th class="px-6 py-4">Acción</th>
+          <th class="px-6 py-4">Detalle</th>
+          <th class="px-6 py-4 text-right rounded-r-2xl">Fecha y Hora</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        <tr v-for="reg in actividadReciente" :key="reg.id" class="hover:bg-slate-50/50 transition-colors">
+          <td class="px-6 py-5">
+            <div class="flex items-center gap-3">
+              <div :class="['p-2 rounded-lg', chipCategoria(reg.categoria).bg]">
+                <component :is="chipCategoria(reg.categoria).icon" class="w-4 h-4" :class="chipCategoria(reg.categoria).color" />
+              </div>
+              <span class="text-xs font-black text-slate-700 uppercase">{{ reg.accion }}</span>
+            </div>
+          </td>
+          <td class="px-6 py-5">
+            <span :class="['px-3 py-1 text-[8px] font-black uppercase tracking-widest rounded-full border', chipCategoria(reg.categoria).badge]">
+              {{ reg.categoria }}
+            </span>
+          </td>
+          <td class="px-6 py-5 max-w-48">
+            <span class="text-[10px] font-bold text-slate-400 uppercase line-clamp-1">{{ reg.detalle }}</span>
+          </td>
+          <td class="px-6 py-5 text-right">
+            <p class="text-[10px] font-black text-slate-600 uppercase">{{ reg.fecha }}</p>
+            <p class="text-[9px] font-bold text-slate-400 uppercase italic">{{ reg.hora }}</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
   </div>
 </template>
+
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '../stores/auth'
+import clienteAxios from '../api/axios'
+import { 
+  PlusIcon, PencilSquareIcon, TruckIcon, ClipboardDocumentCheckIcon, 
+  CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon,
+  ArrowRightCircleIcon, ArrowLeftCircleIcon
+} from '@heroicons/vue/24/outline'
+
+const auth = useAuthStore()
+const today = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })
+
+// --- CONTADORES ---
+const conteoIngresos = ref(0)
+const conteoSolicitudes = ref(0)
+const conteoSoliPendientes = ref(0)
+const conteoSoliAceptadas = ref(0)
+const conteoSoliRechazadas = ref(0)
+const conteoInspecciones = ref(0)
+const conteoInspAprobadas = ref(0)
+const conteoInspObservadas = ref(0)
+const conteoInspRechazadas = ref(0)
+
+const cargarDatos = async () => {
+  const fetchSafe = async (url) => {
+    try {
+      const res = await clienteAxios.get(url)
+      return res.data.results ? res.data.results : res.data
+    } catch (e) {
+      console.error(`Error en ${url}:`, e)
+      return []
+    }
+  }
+
+  const [dataIngresos, dataSolicitudes, dataInspecciones] = await Promise.all([
+    fetchSafe('ingresos/'),
+    fetchSafe('solicitudes-edicion/'),
+    fetchSafe('inspecciones/')
+  ])
+
+  // Ingresos del operador logueado
+  const misIngresos = dataIngresos.filter(i => Number(i.operador) === Number(auth.user_id))
+  //conteoIngresos.value = misIngresos.length
+  conteoIngresos.value = dataIngresos.length
+
+  // Solicitudes del operador logueado
+  const misSolicitudes = dataSolicitudes.filter(s => Number(s.usuario_solicito) === Number(auth.user_id))
+  conteoSolicitudes.value = misSolicitudes.length
+  conteoSoliPendientes.value = misSolicitudes.filter(s => s.estatus === 'PENDIENTE').length
+  conteoSoliAceptadas.value = misSolicitudes.filter(s => s.estatus === 'ACEPTADA').length
+  conteoSoliRechazadas.value = misSolicitudes.filter(s => s.estatus === 'RECHAZADA').length
+
+  // Inspecciones — el operador las ve pero no las hace, filtramos por ingreso que le pertenece
+  // Si el modelo de inspección tiene relación con ingreso y el ingreso tiene operador:
+  conteoInspecciones.value = dataInspecciones.length
+  conteoInspAprobadas.value = dataInspecciones.filter(i => i.resultado === 'APROBADO').length
+  conteoInspObservadas.value = dataInspecciones.filter(i => i.resultado === 'OBSERVADO').length
+  conteoInspRechazadas.value = dataInspecciones.filter(i => i.resultado === 'RECHAZADO').length
+}
+const actividadReciente = ref([])
+
+const mapCategoria = (tipo) => {
+  tipo = tipo.toLowerCase()
+  if (tipo.includes('ingreso'))    return 'ingreso'
+  if (tipo.includes('vehículo'))   return 'vehículo'
+  if (tipo.includes('edición'))    return 'edición'
+  if (tipo.includes('liberación')) return 'salida'
+  if (tipo.includes('solicitud'))  return 'solicitud'
+  return 'sistema'
+}
+
+const chipCategoria = (cat) => ({
+  ingreso:   { bg: 'bg-green-50',   color: 'text-green-600',  badge: 'bg-green-50 text-green-600 border-green-200',  icon: ArrowRightCircleIcon },
+  vehículo:  { bg: 'bg-slate-100',  color: 'text-slate-600',  badge: 'bg-slate-100 text-slate-500 border-slate-200', icon: TruckIcon },
+  edición:   { bg: 'bg-amber-50',   color: 'text-amber-500',  badge: 'bg-amber-50 text-amber-600 border-amber-200',  icon: PencilSquareIcon },
+  salida:    { bg: 'bg-red-50',     color: 'text-red-500',    badge: 'bg-red-50 text-red-600 border-red-200',        icon: ArrowLeftCircleIcon },
+  solicitud: { bg: 'bg-primario/10',color: 'text-primario',   badge: 'bg-primario/10 text-primario border-primario/20', icon: ClipboardDocumentCheckIcon },
+  sistema:   { bg: 'bg-purple-50',  color: 'text-purple-500', badge: 'bg-purple-50 text-purple-600 border-purple-200', icon: ClipboardDocumentCheckIcon },
+}[cat] || { bg: 'bg-slate-100', color: 'text-slate-500', badge: 'bg-slate-100 text-slate-500 border-slate-200', icon: ClipboardDocumentCheckIcon })
+
+const cargarActividad = async () => {
+  try {
+    const res = await clienteAxios.get('bitacora/')
+    actividadReciente.value = res.data
+      .filter(item => item.usuario === auth.username)
+      .slice(0, 8)
+      .map(item => ({
+        id:        item.id,
+        categoria: mapCategoria(item.tipo_evento),
+        accion:    item.tipo_evento,
+        detalle:   item.descripcion,
+        fecha:     new Date(item.fecha_evento).toLocaleDateString('es-MX'),
+        hora:      new Date(item.fecha_evento).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }),
+      }))
+  } catch (e) {
+    console.error('Error cargando actividad:', e)
+  }
+}
+onMounted(() => {
+  cargarDatos()
+  cargarActividad()
+})
+</script>
+
