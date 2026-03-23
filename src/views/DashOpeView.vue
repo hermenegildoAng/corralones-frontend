@@ -96,7 +96,7 @@
            <span>Tus Inspecciones</span>
            <router-link to="/MisInspecciones" class="text-primario hover:underline ml-2">Revisar &rarr;</router-link>
          </h3>
-         <p class="text-5xl font-black text-slate-800 tracking-tighter mb-6">{{ conteoInspecciones }}</p>
+         <p class="text-5xl font-black text-slate-800 tracking-tighter mb-6"></p>
 
          <div class="space-y-2 mt-auto">
             <div class="flex justify-between items-center bg-green-50 px-4 py-2.5 rounded-xl border border-green-100">
