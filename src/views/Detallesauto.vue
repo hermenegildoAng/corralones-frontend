@@ -1066,8 +1066,9 @@ const enviarSolicitud = async () => {
     
   } catch (error) {
     console.error("Error al enviar solicitud:", error);
+    console.error("Respuesta del servidor:", error.response?.data); // ← agregar
     alert("Hubo un error al procesar la solicitud. Revisa la consola.");
-  } finally {
+} finally {
     loading.value = false;
   }
 };
