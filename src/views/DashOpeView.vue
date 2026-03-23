@@ -180,7 +180,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import clienteAxios from '../api/axios'
-import { PlusIcon, PencilSquareIcon, TruckIcon, ClipboardDocumentCheckIcon, CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
+import { 
+  PlusIcon, PencilSquareIcon, TruckIcon, ClipboardDocumentCheckIcon, 
+  CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon,
+  ArrowRightCircleIcon, ArrowLeftCircleIcon
+} from '@heroicons/vue/24/outline'
 
 const auth = useAuthStore()
 const today = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })
@@ -233,7 +237,7 @@ const cargarDatos = async () => {
   conteoInspRechazadas.value = dataInspecciones.filter(i => i.resultado === 'RECHAZADO').length
 }
 
-import { TruckIcon, PencilSquareIcon, ArrowRightCircleIcon, ArrowLeftCircleIcon, ClipboardDocumentCheckIcon } from '@heroicons/vue/24/outline'
+
 
 const actividadReciente = ref([])
 
@@ -275,5 +279,8 @@ const cargarActividad = async () => {
   }
 }
 
-onMounted(cargarDatos, cargarActividad)
+onMounted(() => {
+  cargarDatos()
+  cargarActividad()
+})
 </script>
