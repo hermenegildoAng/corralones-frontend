@@ -8,7 +8,7 @@
           <h1 class="text-4xl font-black text-slate-800 tracking-tighter uppercase">Gestión de Depósitos</h1>
         </div>
         <button @click="abrirModalCrear"
-          class="text-[10px] font-black text-white bg-primario px-6 py-3 rounded-full  cursor-pointer uppercase tracking-widest shadow-sm border border-amber-100">
+          class="text-[10px] font-black text-white bg-primario px-6 py-3 rounded-full  cursor-pointer uppercase tracking-widest shadow-sm border border-primario-100">
           + AGREGAR DEPÓSITO
         </button>
       </div>
@@ -18,9 +18,9 @@
         <div class="relative">
           <MagnifyingGlassIcon class="w-5 h-5 absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input v-model="search" type="text" placeholder="Buscar sede..."
-            class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-amber-500/20" />
+            class="w-full bg-slate-50 border-none rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primario/20" />
         </div>
-        <select v-model="filtroEstatus" class="bg-slate-50 border-none rounded-2xl px-6 py-4 text-[10px] font-black uppercase outline-none focus:ring-2 focus:ring-amber-500/20">
+        <select v-model="filtroEstatus" class="bg-slate-50 border-none rounded-2xl px-6 py-4 text-[10px] font-black uppercase outline-none focus:ring-2 focus:ring-primario/20">
           <option value="TODOS">TODOS LOS ESTATUS</option>
           <option value="ACTIVO">ACTIVO</option>
           <option value="SUSPENDIDO">SUSPENDIDO</option>
