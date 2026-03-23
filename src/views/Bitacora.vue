@@ -183,7 +183,7 @@
 import { ref, computed, watch } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import Swal from 'sweetalert2'
-import clienteAxios from '../api/axios'
+
 import { onMounted } from 'vue'
 import {
   MagnifyingGlassIcon,
