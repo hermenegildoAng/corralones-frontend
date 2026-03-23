@@ -110,153 +110,128 @@ import { QrCodeIcon, XMarkIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/
 
 const router = useRouter()
 
-const modalAbierto      = ref(false)
-const videoRef          = ref(null)
-const canvasRef         = ref(null)
-const estadoCamara      = ref('Iniciando cámara...')
-const resultadoQR       = ref(null)
-const vehiculoEncontrado = ref(null)
-const errorCamara       = ref('')
+// --- CONFIGURACIÓN DE SEGURIDAD ---
+const SISTEMA_ID = "MSYT-CORRALON-"; // Prefijo obligatorio en tus QRs
 
-let stream        = null
-let animacionId   = null
-let vehiculoId    = null
+const modalAbierto       = ref(false)
+const videoRef           = ref(null)
+const canvasRef          = ref(null)
+const estadoCamara       = ref('Iniciando cámara...')
+const vehiculoEncontrado = ref(null)
+const errorCamara        = ref('')
+const escaneando         = ref(false)
+
+let stream       = null
+let animacionId  = null
 
 // ✅ Abre el modal e inicia la cámara
 const abrirScanner = async () => {
   modalAbierto.value       = true
-  resultadoQR.value        = null
   vehiculoEncontrado.value = null
   errorCamara.value        = ''
   estadoCamara.value       = 'Iniciando cámara...'
+  escaneando.value         = true
 
   try {
-    // ✅ Primero pide permiso genérico para que el navegador liste las cámaras
-    const permiso = await navigator.mediaDevices.getUserMedia({ video: true })
-    permiso.getTracks().forEach(t => t.stop()) // cierra ese stream temporal
+    // Forzamos la cámara trasera usando facingMode: environment
+    // Esto es el estándar para móviles para evitar la cámara frontal
+    const constraints = {
+      video: { 
+        facingMode: "environment",
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+      }
+    };
 
-    // ✅ Lista todos los dispositivos de video disponibles
-    const dispositivos = await navigator.mediaDevices.enumerateDevices()
-    const camaras = dispositivos.filter(d => d.kind === 'videoinput')
-
-    console.log('Cámaras disponibles:', camaras.map(c => c.label))
-
-    // ✅ Filtra solo cámaras que NO sean del teléfono conectado
-    // Las cámaras USB/externas suelen tener "USB" o el nombre del teléfono en su label
-    const camaraLocal = camaras.find(c =>
-      !c.label.toLowerCase().includes('vivo') &&
-      !c.label.toLowerCase().includes('android') &&
-      !c.label.toLowerCase().includes('phone') &&
-      !c.label.toLowerCase().includes('usb')
-    )
-
-    // ✅ Usa la cámara local encontrada, o la primera disponible
-    const deviceId = camaraLocal?.deviceId || camaras[0]?.deviceId
-
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { deviceId: { exact: deviceId } }
-    })
-
-    await new Promise(r => setTimeout(r, 100))
-    videoRef.value.srcObject = stream
-    await videoRef.value.play()
-
-    estadoCamara.value = 'Buscando QR...'
-    escanearFrame()
+    stream = await navigator.mediaDevices.getUserMedia(constraints)
+    
+    if (videoRef.value) {
+      videoRef.value.srcObject = stream
+      // Esperamos a que el video esté listo para reproducir
+      videoRef.value.onloadedmetadata = () => {
+        videoRef.value.play()
+        estadoCamara.value = 'Buscando QR del sistema...'
+        escanearFrame()
+      }
+    }
 
   } catch (err) {
     console.error('Error cámara:', err)
-    if (err.name === 'NotAllowedError') {
-      errorCamara.value = 'Permiso de cámara denegado.'
-    } else if (err.name === 'NotFoundError') {
-      errorCamara.value = 'No se encontró ninguna cámara.'
-    } else {
-      errorCamara.value = 'Error: ' + err.message
-    }
+    errorCamara.value = 'No se pudo acceder a la cámara trasera. Verifica los permisos.'
   }
 }
 
-// ✅ Bucle de escaneo frame por frame
+// ✅ Bucle de escaneo optimizado
 const escanearFrame = () => {
-  if (!videoRef.value || videoRef.value.readyState !== videoRef.value.HAVE_ENOUGH_DATA) {
-    animacionId = requestAnimationFrame(escanearFrame)
+  if (!escaneando.value || !videoRef.value) return
+
+  if (videoRef.value.readyState === videoRef.value.HAVE_ENOUGH_DATA) {
+    const canvas = canvasRef.value
+    const video  = videoRef.value
+    
+    canvas.width  = video.videoWidth
+    canvas.height = video.videoHeight
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    
+    const qr = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: 'dontInvert'
+    })
+
+    if (qr) {
+      validarYProcesar(qr.data)
+      return // Detenemos el bucle si encuentra algo
+    }
+  }
+  
+  animacionId = requestAnimationFrame(escanearFrame)
+}
+
+// ✅ VALIDACIÓN: Aquí filtramos que sea nuestro QR
+const validarYProcesar = async (rawData) => {
+  // 1. Verificar prefijo de seguridad
+  if (!rawData.startsWith(SISTEMA_ID)) {
+    estadoCamara.value = "QR inválido o ajeno al sistema."
+    // Reiniciamos escaneo tras un breve delay para que el usuario pueda quitar el QR malo
+    setTimeout(escanearFrame, 2000) 
     return
   }
 
-  const canvas  = canvasRef.valune
-  const video   = videoRef.value
-  canvas.width  = video.videoWidth
-  canvas.height = video.videoHeight
-
-  const ctx = canvas.getContext('2d')
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-  const qr = jsQR(imageData.data, imageData.width, imageData.height, {
-    inversionAttempts: 'dontInvert'
-  })
-
-  if (qr) {
-    // ✅ QR detectado — procesa los datos
-    procesarQR(qr.data)
-  } else {
-    animacionId = requestAnimationFrame(escanearFrame)
-  }
-}
-
-// ✅ Procesa el JSON del QR y busca en el sistema
-const procesarQR = async (rawData) => {
-  estadoCamara.value = '¡QR detectado! Buscando...'
+  // 2. Si es válido, procedemos
+  escaneando.value = false
   detenerCamara()
+  estadoCamara.value = '¡QR Válido! Consultando unidad...'
 
   try {
-    const datos = JSON.parse(rawData)
-    resultadoQR.value = datos
-
-    // Busca por placa u otro campo identificador
-    const identificador = datos.placa || datos.id || datos.folio
-    if (!identificador) {
-      vehiculoEncontrado.value = null
-      return
-    }
-
-    // ✅ Busca en tu API de Django
+    // Extraemos el ID o Folio (lo que venga después del prefijo)
+    const identificador = rawData.replace(SISTEMA_ID, "")
+    
+    // 3. Buscamos en el backend
     const response = await clienteAxios.get(`ingresos/?search=${identificador}`)
     const resultados = response.data?.results || response.data
 
     if (resultados && resultados.length > 0) {
       vehiculoEncontrado.value = resultados[0]
-      vehiculoId = resultados[0].id
+      // Si quieres navegar directo:
+      // router.push(`/ingresos/${resultados[0].id}`)
     } else {
-      vehiculoEncontrado.value = null
+      errorCamara.value = "Vehículo no encontrado en la base de datos."
     }
-
   } catch (err) {
-    console.error('Error procesando QR:', err)
-    vehiculoEncontrado.value = null
-    // Si no es JSON válido
-    resultadoQR.value = { raw: rawData }
+    console.error('Error API:', err)
+    errorCamara.value = "Error al conectar con el servidor."
   }
-}
-
-// ✅ Navega al expediente del vehículo
-const irAlVehiculo = () => {
-  cerrarScanner()
-  if (vehiculoId) {
-    router.push(`/ingresos/${vehiculoId}`)
-  }
-}
-
-const reiniciarScanner = () => {
-  resultadoQR.value        = null
-  vehiculoEncontrado.value = null
-  estadoCamara.value       = 'Buscando QR...'
-  abrirScanner()
 }
 
 const detenerCamara = () => {
+  escaneando.value = false
   if (animacionId) cancelAnimationFrame(animacionId)
-  if (stream) stream.getTracks().forEach(t => t.stop())
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop())
+    stream = null
+  }
 }
 
 const cerrarScanner = () => {
