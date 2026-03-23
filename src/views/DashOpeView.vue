@@ -118,80 +118,61 @@
 
     <!-- ACTIVIDAD RECIENTE -->
     <div class="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-sm">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-6 border-b border-slate-50 gap-4">
-        <div>
-          <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Actividad Reciente</h3>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Últimos movimientos registrados por ti</p>
-        </div>
-        <router-link to="/bitacora" class="px-6 py-3 bg-slate-50 border border-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] rounded-2xl hover:bg-primario hover:text-white hover:border-primario transition-all shadow-sm">
-          Ver Bitácora Completa
-        </router-link>
-      </div>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-left min-w-150">
-          <thead>
-            <tr class="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50">
-              <th class="px-6 py-4 rounded-l-2xl">Operación</th>
-              <th class="px-6 py-4">Folio / Placa</th>
-              <th class="px-6 py-4">Status / Evento</th>
-              <th class="px-6 py-4 text-right rounded-r-2xl">Fecha y Hora</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-50">
-            <!-- Simulación de Actividad -->
-            <tr class="hover:bg-slate-50/50 transition-colors">
-              <td class="px-6 py-5">
-                <div class="flex items-center gap-3">
-                  <div class="p-2 bg-primario/10 rounded-lg"><TruckIcon class="w-4 h-4 text-primario" /></div>
-                  <span class="text-xs font-black text-slate-700 uppercase">Nuevo Ingreso</span>
-                </div>
-              </td>
-              <td class="px-6 py-5">
-                <span class="text-xs font-black text-slate-600 uppercase">XAB-92</span>
-              </td>
-              <td class="px-6 py-5">
-                <span class="px-3 py-1 bg-slate-100 text-slate-500 border border-slate-200 text-[8px] font-black uppercase tracking-widest rounded-full">Registro Exitoso</span>
-              </td>
-              <td class="px-6 py-5 text-right font-medium text-xs text-slate-500">Hoy, 10:20 AM</td>
-            </tr>
-
-            <tr class="hover:bg-slate-50/50 transition-colors">
-              <td class="px-6 py-5">
-                <div class="flex items-center gap-3">
-                  <div class="p-2 bg-amber-50 border border-amber-100 rounded-lg"><PencilSquareIcon class="w-4 h-4 text-amber-500" /></div>
-                  <span class="text-xs font-black text-slate-700 uppercase">Envió Solicitud</span>
-                </div>
-              </td>
-              <td class="px-6 py-5">
-                <span class="text-[10px] font-bold text-slate-500 uppercase">Cambio Placa (TLA-11)</span>
-              </td>
-              <td class="px-6 py-5">
-                <span class="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-200 text-[8px] font-black uppercase tracking-widest rounded-full">Pendiente Revisión</span>
-              </td>
-              <td class="px-6 py-5 text-right font-medium text-xs text-slate-500">Ayer, 16:40 PM</td>
-            </tr>
-
-            <tr class="hover:bg-slate-50/50 transition-colors">
-              <td class="px-6 py-5">
-                <div class="flex items-center gap-3">
-                  <div class="p-2 bg-indigo-50 border border-indigo-100 rounded-lg"><ClipboardDocumentCheckIcon class="w-4 h-4 text-indigo-500" /></div>
-                  <span class="text-xs font-black text-slate-700 uppercase">Inspección Leída</span>
-                </div>
-              </td>
-              <td class="px-6 py-5">
-                <span class="text-xs font-black text-slate-600 uppercase">SMyT-004</span>
-              </td>
-              <td class="px-6 py-5">
-                <span class="px-3 py-1 bg-green-50 text-green-600 border border-green-200 text-[8px] font-black uppercase tracking-widest rounded-full">Dictamen Aprobado</span>
-              </td>
-              <td class="px-6 py-5 text-right font-medium text-xs text-slate-500">12 MAR, 09:15 AM</td>
-            </tr>
-
-          </tbody>
-        </table>
-      </div>
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-6 border-b border-slate-50 gap-4">
+    <div>
+      <h3 class="text-xl font-black text-slate-800 uppercase tracking-tight">Actividad Reciente</h3>
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Últimos movimientos registrados por ti</p>
     </div>
+    <router-link to="/bitacora" class="px-6 py-3 bg-slate-50 border border-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-[0.2em] rounded-2xl hover:bg-primario hover:text-white hover:border-primario transition-all shadow-sm">
+      Ver Bitácora Completa
+    </router-link>
+  </div>
+
+  <!-- Sin resultados -->
+  <div v-if="actividadReciente.length === 0" class="py-12 flex flex-col items-center justify-center gap-4">
+    <div class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center">
+      <ClipboardDocumentCheckIcon class="w-5 h-5 text-slate-300" />
+    </div>
+    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Sin actividad reciente</p>
+  </div>
+
+  <div v-else class="overflow-x-auto">
+    <table class="w-full text-left min-w-150">
+      <thead>
+        <tr class="text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50">
+          <th class="px-6 py-4 rounded-l-2xl">Operación</th>
+          <th class="px-6 py-4">Acción</th>
+          <th class="px-6 py-4">Detalle</th>
+          <th class="px-6 py-4 text-right rounded-r-2xl">Fecha y Hora</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        <tr v-for="reg in actividadReciente" :key="reg.id" class="hover:bg-slate-50/50 transition-colors">
+          <td class="px-6 py-5">
+            <div class="flex items-center gap-3">
+              <div :class="['p-2 rounded-lg', chipCategoria(reg.categoria).bg]">
+                <component :is="chipCategoria(reg.categoria).icon" class="w-4 h-4" :class="chipCategoria(reg.categoria).color" />
+              </div>
+              <span class="text-xs font-black text-slate-700 uppercase">{{ reg.accion }}</span>
+            </div>
+          </td>
+          <td class="px-6 py-5">
+            <span :class="['px-3 py-1 text-[8px] font-black uppercase tracking-widest rounded-full border', chipCategoria(reg.categoria).badge]">
+              {{ reg.categoria }}
+            </span>
+          </td>
+          <td class="px-6 py-5 max-w-48">
+            <span class="text-[10px] font-bold text-slate-400 uppercase line-clamp-1">{{ reg.detalle }}</span>
+          </td>
+          <td class="px-6 py-5 text-right">
+            <p class="text-[10px] font-black text-slate-600 uppercase">{{ reg.fecha }}</p>
+            <p class="text-[9px] font-bold text-slate-400 uppercase italic">{{ reg.hora }}</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
   </div>
 </template>
 
@@ -199,7 +180,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import clienteAxios from '../api/axios'
-import { PlusIcon, PencilSquareIcon, TruckIcon, ClipboardDocumentCheckIcon, CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
+import { 
+  PlusIcon, PencilSquareIcon, TruckIcon, ClipboardDocumentCheckIcon, 
+  CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon,
+  ArrowRightCircleIcon, ArrowLeftCircleIcon
+} from '@heroicons/vue/24/outline'
 
 const auth = useAuthStore()
 const today = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })
@@ -251,6 +236,47 @@ const cargarDatos = async () => {
   conteoInspObservadas.value = dataInspecciones.filter(i => i.resultado === 'OBSERVADO').length
   conteoInspRechazadas.value = dataInspecciones.filter(i => i.resultado === 'RECHAZADO').length
 }
+const actividadReciente = ref([])
 
-onMounted(cargarDatos)
+const mapCategoria = (tipo) => {
+  tipo = tipo.toLowerCase()
+  if (tipo.includes('ingreso'))    return 'ingreso'
+  if (tipo.includes('vehículo'))   return 'vehículo'
+  if (tipo.includes('edición'))    return 'edición'
+  if (tipo.includes('liberación')) return 'salida'
+  if (tipo.includes('solicitud'))  return 'solicitud'
+  return 'sistema'
+}
+
+const chipCategoria = (cat) => ({
+  ingreso:   { bg: 'bg-green-50',   color: 'text-green-600',  badge: 'bg-green-50 text-green-600 border-green-200',  icon: ArrowRightCircleIcon },
+  vehículo:  { bg: 'bg-slate-100',  color: 'text-slate-600',  badge: 'bg-slate-100 text-slate-500 border-slate-200', icon: TruckIcon },
+  edición:   { bg: 'bg-amber-50',   color: 'text-amber-500',  badge: 'bg-amber-50 text-amber-600 border-amber-200',  icon: PencilSquareIcon },
+  salida:    { bg: 'bg-red-50',     color: 'text-red-500',    badge: 'bg-red-50 text-red-600 border-red-200',        icon: ArrowLeftCircleIcon },
+  solicitud: { bg: 'bg-primario/10',color: 'text-primario',   badge: 'bg-primario/10 text-primario border-primario/20', icon: ClipboardDocumentCheckIcon },
+  sistema:   { bg: 'bg-purple-50',  color: 'text-purple-500', badge: 'bg-purple-50 text-purple-600 border-purple-200', icon: ClipboardDocumentCheckIcon },
+}[cat] || { bg: 'bg-slate-100', color: 'text-slate-500', badge: 'bg-slate-100 text-slate-500 border-slate-200', icon: ClipboardDocumentCheckIcon })
+
+const cargarActividad = async () => {
+  try {
+    const res = await clienteAxios.get('bitacora/')
+    actividadReciente.value = res.data
+      .filter(item => item.usuario === auth.username)
+      .slice(0, 8)
+      .map(item => ({
+        id:        item.id,
+        categoria: mapCategoria(item.tipo_evento),
+        accion:    item.tipo_evento,
+        detalle:   item.descripcion,
+        fecha:     new Date(item.fecha_evento).toLocaleDateString('es-MX'),
+        hora:      new Date(item.fecha_evento).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }),
+      }))
+  } catch (e) {
+    console.error('Error cargando actividad:', e)
+  }
+}
+onMounted(() => {
+  cargarDatos()
+  cargarActividad()
+})
 </script>
