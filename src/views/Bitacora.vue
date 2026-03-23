@@ -274,7 +274,7 @@ onMounted(async () => {
   try {
     const token = auth.token
 
-   const res = await clienteAxios.get('bitacora/')
+ 
 
     const res = await clienteAxios.get('bitacora/')
     todosLosRegistros.value = res.data.map(item => ({
