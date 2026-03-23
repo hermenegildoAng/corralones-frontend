@@ -8,7 +8,7 @@
           <h1 class="text-4xl font-black text-slate-800 tracking-tighter uppercase">Gestión de Depósitos</h1>
         </div>
         <button @click="abrirModalCrear"
-          class="text-[10px] font-black text-amber-600 bg-amber-50 px-6 py-3 rounded-full hover:bg-amber-500 hover:text-white transition-all uppercase tracking-widest shadow-sm border border-amber-100">
+          class="text-[10px] font-black text-white bg-primario px-6 py-3 rounded-full  cursor-pointer uppercase tracking-widest shadow-sm border border-amber-100">
           + AGREGAR DEPÓSITO
         </button>
       </div>
@@ -59,10 +59,10 @@
               </td>
               <td class="px-8 py-6 text-center">
                 <div class="flex items-center justify-center gap-2">
-                  <button @click="verDetalles(dep.id)" class="p-2.5 text-slate-400 hover:text-amber-500 rounded-xl border border-slate-100 transition-all">
+                  <button @click="verDetalles(dep.id)" class="p-2.5 text-slate-400 hover:text-primario rounded-xl border border-slate-100 transition-all">
                     <EyeIcon class="w-5 h-5" />
                   </button>
-                  <button @click="abrirModalEditar(dep)" class="p-2.5 text-slate-400 hover:text-blue-500 rounded-xl border border-slate-100 transition-all">
+                  <button @click="abrirModalEditar(dep)" class="p-2.5 text-slate-400 hover:text-primario rounded-xl border border-slate-100 transition-all">
                     <PencilSquareIcon class="w-5 h-5" />
                   </button>
                 </div>
@@ -114,11 +114,11 @@
     <!-- Acciones -->
     <div class="flex gap-2 pt-2 border-t border-slate-50">
       <button @click="verDetalles(dep.id)"
-        class="flex-1 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-amber-500 hover:text-white transition-all border border-slate-100 text-[10px] font-black uppercase flex items-center justify-center gap-2">
+        class="flex-1 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-primario hover:text-white transition-all border border-slate-100 text-[10px] font-black uppercase flex items-center justify-center gap-2">
         <EyeIcon class="w-4 h-4" /> Ver
       </button>
       <button @click="abrirModalEditar(dep)"
-        class="flex-1 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-blue-500 hover:text-white transition-all border border-slate-100 text-[10px] font-black uppercase flex items-center justify-center gap-2">
+        class="flex-1 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-primario hover:text-white transition-all border border-slate-100 text-[10px] font-black uppercase flex items-center justify-center gap-2">
         <PencilSquareIcon class="w-4 h-4" /> Editar
       </button>
     </div>
@@ -138,7 +138,7 @@
 
             <div class="flex justify-between items-center mb-10">
               <div>
-                <span class="text-[9px] font-black text-amber-500 uppercase tracking-[0.3em]">Configuración</span>
+                
                 <h2 class="text-3xl font-black text-slate-800 tracking-tighter uppercase mt-1">
                   {{ modoEdicion ? 'Actualizar Sede' : 'Nuevo Depósito' }}
                 </h2>
@@ -239,7 +239,7 @@
               </div>
 
               <button type="submit" :disabled="loading"
-                class="w-full bg-slate-900 text-white font-black py-6 rounded-[2rem] mt-4 hover:bg-amber-500 transition-all uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-slate-100 disabled:opacity-50 active:scale-95">
+                class="w-full bg-primario cursor-pointer text-white font-black py-6 rounded-4xl mt-4  transition-all uppercase text-[10px] tracking-[0.2em] shadow-xl shadow-slate-100 disabled:opacity-50 active:scale-95">
                 <span v-if="loading" class="animate-spin mr-2 inline-block">◌</span>
                 {{ modoEdicion ? 'Actualizar Información' : 'Registrar Depósito' }}
               </button>
