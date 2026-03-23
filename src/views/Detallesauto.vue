@@ -586,7 +586,7 @@ import { useAuthStore } from '../stores/auth'
 import CodigoQr from '../components/CodigoQR.vue'
 import {ArrowLeftIcon, PencilSquareIcon, ClipboardDocumentCheckIcon,
    DocumentArrowDownIcon, MagnifyingGlassPlusIcon, ScaleIcon, PhotoIcon, DocumentTextIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline'
-
+import Swal from 'sweetalert2'
 
 
 
@@ -962,7 +962,7 @@ const cargarDatos = async () => {
 
     // 5️⃣ Guardar documentos
     documentos.value = listaDocs
-    console.log("LISTA FINAL DE DOCUMENTOS:", documentos.value)
+    
 
     
      /*if (data.vehiculo_detalle?.foto_principal) {
@@ -972,6 +972,11 @@ const cargarDatos = async () => {
 
   } catch (error) {
     console.error("Error al cargar:", error)
+    Swal.fire({
+      icon: 'error',
+      title: 'Error al cargar',
+      text: error?.response?.data?.message || error.message || 'Error desconocido'
+    })
   } finally {
     loading.value = false
   }
@@ -1003,12 +1008,20 @@ const enviarSolicitud = async () => {
   // 1. Validaciones básicas
   const requiereJustificacion = ['EDICION_NORMAL', 'FOTO_EXTRA', 'NUEVO_DOCUMENTO']
   if (requiereJustificacion.includes(modoFormulario.value) && !formEdicion.value.justificacion) {
-    alert("Por favor, ingresa una justificación para este movimiento.");
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campo obligatorio',
+      text: 'Por favor, ingresa una justificación para este movimiento.'
+    })
     return;
   }
   // Si es una foto extra o un documento, el archivo es obligatorio
   if ((modoFormulario.value === 'FOTO_EXTRA' || modoFormulario.value === 'NUEVO_DOCUMENTO') && !formEdicion.value.evidencia) {
-    alert("Para este registro, la foto o documento es obligatorio.");
+    Swal.fire({
+      icon: 'warning',
+      title: 'Archivo obligatorio',
+      text: 'Para este registro, la foto o documento es obligatorio.'
+    })
     return;
   }
 
@@ -1059,15 +1072,23 @@ const enviarSolicitud = async () => {
     // Usamos la variable imprimiéndola:
     console.log("Éxito desde Django:", response.data);
 
-    alert("Solicitud enviada correctamente. El administrador la revisará pronto.");
+    await Swal.fire({
+      icon: 'success',
+      title: 'Solicitud enviada',
+      text: 'El administrador la revisará pronto.',
+      confirmButtonText: 'Entendido'
+    })
     cerrarEditor();
     // Opcional: recargar los datos para ver los cambios si el usuario es Admin
     // cargarDatos(); 
     
   } catch (error) {
-    console.error("Error al enviar solicitud:", error);
-    console.error("Respuesta del servidor:", error.response?.data); // ← agregar
-    alert("Hubo un error al procesar la solicitud. Revisa la consola.");
+     // ← agregar
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error al procesar',
+      text: 'Hubo un problema al procesar la solicitud.'
+    })
 } finally {
     loading.value = false;
   }
@@ -1106,13 +1127,31 @@ const guardarInspeccion = async () => {
       ? route.params.id[0] 
       : route.params.id
 
-    if (!idIngreso) return alert('No hay ID de ingreso');
-    if (!auth.user_id) return alert('No hay usuario logueado');
+    if (!idIngreso) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error de sistema',
+        text: 'No hay ID de ingreso'
+      })
+      return
+    }
+    if (!auth.user_id) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Sesión requerida',
+        text: 'No hay usuario logueado'
+      })
+      return
+    }
 
     // 2. Validar si ya existe (para evitar duplicados en OneToOne)
     const res = await clienteAxios.get(`/inspecciones/?ingreso=${idIngreso}`);
     if (res.data.length > 0) {
-      alert('⚠️ Ya existe una inspección para este ingreso');
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Inspección duplicada',
+        text: 'Ya existe una inspección para este ingreso'
+      })
       return;
     }
 
@@ -1130,20 +1169,29 @@ const guardarInspeccion = async () => {
       documentacion_ok: formInspeccion.value.documentacion_ok
     };
 
-    console.log("Enviando payload:", payload);
+    
 
     // 4. Único envío a la API
     await clienteAxios.post('/inspecciones/', payload);
 
     // 5. Éxito
     drawerInspeccion.value = false;
-    alert('✅ Inspección guardada y firmada exitosamente 🔥');
+    await Swal.fire({
+        icon: 'success',
+        title: 'Inspección guardada',
+        text: 'La inspección se guardó y firmó correctamente.',
+        confirmButtonText: 'Aceptar'
+      })
 
   } catch (e) {
     console.error("Error detallado:", e.response?.data);
     // Si Django nos dice qué campo falta, lo mostramos
     const errorMsg = e.response?.data ? JSON.stringify(e.response.data) : 'Error de conexión';
-    alert('❌ Error al guardar: ' + errorMsg);
+    await Swal.fire({
+      icon: 'error',
+      title: 'Error al guardar',
+      text: errorMsg ?? 'Ocurrió un problema inesperado'
+    })
   }
 };
 </script>
