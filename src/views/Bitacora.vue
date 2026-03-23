@@ -183,7 +183,7 @@
 import { ref, computed, watch } from 'vue'
 import { useAuthStore } from '../stores/auth'
 import Swal from 'sweetalert2'
-import axios from 'axios'
+import clienteAxios from '../api/axios'
 import { onMounted } from 'vue'
 import {
   MagnifyingGlassIcon,
@@ -200,7 +200,7 @@ import {
   QrCodeIcon,
 } from '@heroicons/vue/24/outline'
 import AppPaginator from '../components/AppPaginator.vue'
-
+import clienteAxios from '../api/axios'
 const auth = useAuthStore()
 
 // ─── ROL DETECTADO ───────────────────────────────────────────
@@ -274,13 +274,9 @@ onMounted(async () => {
   try {
     const token = auth.token
 
-    const res = await axios.get('http://127.0.0.1:8000/api/bitacora/', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+   const res = await clienteAxios.get('bitacora/')
 
-    console.log('Respuesta:', res.data)  // ← confirma que llegan datos
+    const res = await clienteAxios.get('bitacora/')
     todosLosRegistros.value = res.data.map(item => ({
       id:        item.id,
       usuario:   item.usuario ?? 'Sistema',

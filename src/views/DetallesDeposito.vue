@@ -44,7 +44,7 @@
              <div class="w-px h-10 bg-slate-100"></div>
              <div class="text-left">
                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Creación</span>
-               <span class="text-xs font-bold text-slate-600 uppercase">{{ formatoFecha(deposito.created_at) }}</span>
+               <span class="text-xs font-bold text-slate-600 uppercase">{{ formatoFecha(deposito.creado_el) }}</span>
              </div>
            </div>
         </div>
@@ -90,18 +90,7 @@
           </div>
         </div>
 
-        <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between bg-linear-to-br from-slate-50 to-white">
-          <div class="flex justify-between items-start mb-6">
-            <div class="p-3 bg-white rounded-xl shadow-sm border border-slate-100">
-              <BuildingOfficeIcon class="w-6 h-6 text-slate-700" />
-            </div>
-            <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Titular</span>
-          </div>
-          <div>
-            <p class="text-sm font-black text-slate-700 uppercase leading-snug">{{ deposito.concesionario_responsable || 'NO DEFINIDO' }}</p>
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">Responsable General</p>
-          </div>
-        </div>
+        
       </section>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start mb-12">

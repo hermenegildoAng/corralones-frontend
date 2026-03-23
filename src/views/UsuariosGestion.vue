@@ -12,7 +12,7 @@
         <button
           type="button"
           @click="abrirModal"
-          class="bg-slate-900 text-white font-black px-8 py-4 rounded-2xl hover:scale-105 hover:bg-purple-600 shadow-xl shadow-slate-900/20 transition-all text-[10px] uppercase tracking-widest"
+          class="bg-primario text-white font-black px-8 py-4 rounded-2xl hover:scale-105 cursor-pointer shadow-xl shadow-slate-900/20 transition-all text-[10px] uppercase tracking-widest"
         >
           + NUEVO USUARIO
         </button>
@@ -72,7 +72,7 @@
               >
                 <td class="px-8 py-6">
                   <div class="flex items-center">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-600 font-black mr-4 group-hover:bg-purple-600 group-hover:text-white transition-all shadow-sm">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-primario font-black mr-4 group-hover:bg-primario group-hover:text-white transition-all shadow-sm">
                       {{ user.username?.charAt(0).toUpperCase() }}
                     </div>
                     <div>
@@ -120,15 +120,22 @@
                       <EyeIcon class="w-4 h-4" />
                     </button>
                     <button
-                      type="button"
                       @click="cambiarEstatusUsuario(user)"
-                      :class="['p-3 rounded-2xl transition-all border shadow-sm',
+                      :class="[
+                        'px-4 py-2.5 rounded-xl transition-all border text-[10px] font-black flex items-center justify-center',
                         user.estatus_user === 'ACTIVO'
                           ? 'bg-white border-red-100 text-red-400 hover:bg-red-500 hover:text-white'
                           : 'bg-white border-green-100 text-green-500 hover:bg-green-500 hover:text-white'
                       ]"
                     >
-                      <span>{{ user.estatus_user === 'ACTIVO' ? '🚫' : '✅' }}</span>
+                      <XMarkIcon
+                        v-if="user.estatus_user === 'ACTIVO'"
+                        class="w-4 h-4"
+                      />
+                      <CheckIcon
+                        v-else
+                        class="w-4 h-4"
+                      />
                     </button>
                   </div>
                 </td>
@@ -193,12 +200,23 @@
                 class="flex-1 py-2.5 rounded-xl bg-slate-50 text-slate-400 hover:bg-purple-900 hover:text-white transition-all border border-slate-100 text-[10px] font-black uppercase flex items-center justify-center gap-2">
                 <EyeIcon class="w-4 h-4" /> Ver
               </button>
-              <button @click="cambiarEstatusUsuario(user)"
-                :class="['px-4 py-2.5 rounded-xl transition-all border text-[10px] font-black',
+              <button
+                @click="cambiarEstatusUsuario(user)"
+                :class="[
+                  'px-4 py-2.5 rounded-xl transition-all border text-[10px] font-black flex items-center justify-center',
                   user.estatus_user === 'ACTIVO'
                     ? 'bg-white border-red-100 text-red-400 hover:bg-red-500 hover:text-white'
-                    : 'bg-white border-green-100 text-green-500 hover:bg-green-500 hover:text-white']">
-                {{ user.estatus_user === 'ACTIVO' ? '🚫' : '✅' }}
+                    : 'bg-white border-green-100 text-green-500 hover:bg-green-500 hover:text-white'
+                ]"
+              >
+                <XMarkIcon
+                  v-if="user.estatus_user === 'ACTIVO'"
+                  class="w-4 h-4"
+                />
+                <CheckIcon
+                  v-else
+                  class="w-4 h-4"
+                />
               </button>
             </div>
           </div>
@@ -221,8 +239,8 @@
           <div class="p-10">
             <div class="flex justify-between items-center mb-10">
               <div>
-                <span class="text-[9px] font-black text-purple-500 uppercase tracking-[0.3em]">{{ editandoId ? 'Actualización' : 'Alta de Personal' }}</span>
-                <h2 class="text-3xl font-black text-slate-800 tracking-tighter uppercase mt-1">{{ editandoId ? 'Editar Usuario' : 'Nuevo Integrante' }}</h2>
+                <span class="text-[9px] font-black text-primario uppercase tracking-[0.3em]">{{ editandoId ? 'Actualización' : 'Alta de Personal' }}</span>
+                <h2 class="text-3xl font-black text-primario tracking-tighter uppercase mt-1">{{ editandoId ? 'Editar Usuario' : 'Nuevo Integrante' }}</h2>
               </div>
               <button
                 type="button"
@@ -290,11 +308,11 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-purple-50/50 rounded-3xl border border-purple-100">
                 <div class="space-y-2">
-                  <label class="text-[9px] font-black uppercase ml-2 tracking-widest text-purple-600">Username</label>
+                  <label class="text-[9px] font-black uppercase ml-2 tracking-widest text-primario">Username</label>
                   <input v-model="nuevoUsuario.username" type="text" :readonly="!!editandoId" class="w-full px-6 py-4 bg-white border border-purple-100 rounded-2xl font-black text-slate-700 outline-none">
                 </div>
                 <div class="space-y-2">
-                  <label class="text-[9px] font-black uppercase ml-2 tracking-widest text-purple-600">
+                  <label class="text-[9px] font-black uppercase ml-2 tracking-widest text-primario">
                     {{ editandoId ? 'Nueva Password (opcional)' : 'Password Inicial' }}
                   </label>
                   <input v-model="nuevoUsuario.password" type="text" :required="!editandoId" class="w-full px-6 py-4 bg-white border border-purple-100 rounded-2xl font-black text-slate-700 outline-none" placeholder="••••••••">
@@ -308,7 +326,7 @@
                 :class="['w-full font-black py-5 rounded-3xl mt-4 transition-all uppercase text-[10px] tracking-[0.2em]',
                   cargando
                     ? 'bg-slate-400 text-white cursor-not-allowed'
-                    : 'bg-slate-900 text-white hover:bg-purple-600 hover:shadow-2xl hover:shadow-purple-900/30'
+                    : 'bg-primario text-white cursor-pointer hover:shadow-2xl hover:shadow-purple-900/30'
                 ]"
               >
                 <span v-if="cargando">⏳ GUARDANDO...</span>
@@ -325,7 +343,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue'
-import { EyeIcon, PencilSquareIcon } from '@heroicons/vue/24/outline'
+import { EyeIcon, PencilSquareIcon , CheckIcon, XMarkIcon} from '@heroicons/vue/24/outline'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import clienteAxios from '../api/axios'

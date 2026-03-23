@@ -37,7 +37,7 @@
     </nav>
 
     <div class="p-4 border-t border-gray-100">
-<button @click="goToEditProfile" class="w-full flex items-center p-3 text-purple-600 font-bold gap-2 hover:bg-purple-50 rounded-lg transition-colors">
+<button @click="goToEditProfile" class="w-full flex items-center p-3 text-primario font-bold gap-2 hover:bg-primario hover:text-white rounded-lg transition-colors">
   <UserIcon class="w-5 h-5" />
   <span>Editar Perfil</span>
 </button>

@@ -56,8 +56,8 @@
 
         <div class="flex-1 flex flex-col justify-center">
             <div class="flex justify-between items-start mb-2">
-              <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Folio Ingreso</span>
-              <p class="text-[10px] font-black text-slate-300 uppercase tracking-tighter">{{ inspeccion.fecha_revision }}</p>
+              <span class="text-[9px] font-black text-primario uppercase tracking-widest block">Folio Ingreso</span>
+              <p class="text-[10px] font-black text-primario uppercase tracking-tighter">{{ inspeccion.fecha_revision }}</p>
             </div>
             
             <h3 class="text-lg font-black text-slate-800 uppercase tracking-tight mb-1">{{ inspeccion.folio }}</h3>
@@ -70,7 +70,7 @@
             <div class="flex gap-4 border-t border-slate-100 pt-4 mt-auto">
                <div class="flex items-center gap-2">
                  <UserIcon class="w-4 h-4 text-slate-400" />
-                 <span class="text-[10px] font-bold text-slate-500 uppercase">Por: <span class="text-primario">@{{ inspeccion.administrador }}</span></span>
+                 <span class="text-[10px] font-bold text-slate-500 uppercase">Por: <span class="text-primario">@{{ inspeccion.admin_username }}</span></span>
                </div>
                <div class="flex items-center gap-2 ml-auto">
                  <span class="text-[9px] font-black text-slate-400 uppercase transition-colors group-hover:text-primario">Click para leer detalles &rarr;</span>
