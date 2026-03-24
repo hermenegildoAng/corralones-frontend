@@ -9,9 +9,7 @@
   </header>
 
   <main class="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4 pt-24 pb-16 font-sans">
-    <div
-      class="bg-white rounded-[3rem] shadow-2xl overflow-hidden w-full max-w-5xl flex flex-col md:flex-row min-h-150 border border-gray-100 animate-in fade-in zoom-in duration-500">
-
+    <div class="bg-white rounded-[3rem] shadow-2xl overflow-hidden w-full max-w-5xl flex flex-col-reverse md:flex-row ...">
       <div class="md:w-1/2 bg-primario p-12 text-white flex flex-col justify-center relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
         <div class="absolute bottom-0 left-0 w-40 h-40 bg-rosa-comp/20 rounded-full -ml-20 -mb-20"></div>
