@@ -218,9 +218,6 @@ onMounted(() => {
   pollingInterval = setInterval(cargarInspecciones, 15000)
 })
 
-onUnmounted(() => {
-  clearInterval(pollingInterval)
-})
 
 
 

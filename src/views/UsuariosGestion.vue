@@ -564,7 +564,5 @@ onMounted(() => {
   pollingInterval = setInterval(cargarUsuarios, 15000) // cada 15 segundos
 })
 
-onUnmounted(() => {
-  clearInterval(pollingInterval)
-})
+
 </script>

@@ -517,8 +517,5 @@ onMounted(() => {
   }, 15000)
 })
 
-onUnmounted(() => {
-  clearInterval(pollingInterval)
-})
 
 </script>

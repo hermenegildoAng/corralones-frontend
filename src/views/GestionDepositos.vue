@@ -404,9 +404,7 @@ onMounted(() => {
   pollingInterval = setInterval(cargarDatos, 15000)
 })
 
-onUnmounted(() => {
-  clearInterval(pollingInterval)
-})
+
 </script>
 
 <style scoped>

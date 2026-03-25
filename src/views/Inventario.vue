@@ -234,7 +234,5 @@ onMounted(() => {
   pollingInterval = setInterval(cargarIngresos, 15000)
 })
 
-onUnmounted(() => {
-  clearInterval(pollingInterval)
-})
+
 </script>

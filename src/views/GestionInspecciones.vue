@@ -164,6 +164,7 @@ const irADetalles = (ingresoId) => {
 onMounted(() => {
   cargarInspecciones()
   pollingInterval = setInterval(cargarInspecciones, 15000)
+  
 })
 
 
