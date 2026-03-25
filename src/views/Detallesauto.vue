@@ -176,9 +176,7 @@
                 <button v-if="auth.rol === 'ADMIN'" @click="drawerInspeccion = !drawerInspeccion" :class="['p-4 rounded-2xl transition-all shadow-sm w-full flex justify-center items-center', drawerInspeccion ? 'bg-slate-800 text-white shadow-xl' : 'bg-slate-50 text-slate-400 hover:bg-primario hover:text-white']">
                   <ClipboardDocumentCheckIcon class="w-6 h-6" />
                 </button>
-                <button class="p-4 bg-slate-50 text-slate-400 rounded-2xl hover:bg-slate-100 shadow-sm transition-all w-full flex justify-center items-center">
-                  <DocumentArrowDownIcon class="w-6 h-6" />
-                </button>
+                
               </div>
             </div>
           </div>
