@@ -1127,7 +1127,6 @@ const guardarInspeccion = async () => {
       ? route.params.id[0] 
       : route.params.id
 
-
     if (!idIngreso) {
       await Swal.fire({
         icon: 'error',
@@ -1136,6 +1135,7 @@ const guardarInspeccion = async () => {
       })
       return
     }
+
     if (!auth.user_id) {
       await Swal.fire({
         icon: 'warning',
@@ -1145,18 +1145,19 @@ const guardarInspeccion = async () => {
       return
     }
 
-
+    // 1. Verificar si ya existe
     const res = await clienteAxios.get(`/inspecciones/?ingreso=${idIngreso}`)
+    
     if (res.data.length > 0) {
-
       await Swal.fire({
         icon: 'warning',
         title: 'Inspección duplicada',
         text: 'Ya existe una inspección para este ingreso'
       })
-      return;
+      return; 
+    } // <-- Aquí faltaba cerrar esta llave
 
-
+    // 2. Preparar el envío
     const payload = {
       ingreso: Number(idIngreso),
       ingreso_id: Number(idIngreso),
@@ -1169,31 +1170,26 @@ const guardarInspeccion = async () => {
       documentacion_ok: formInspeccion.value.documentacion_ok
     }
 
-
-    
-
-    // 4. Único envío a la API
+    // 3. Único envío a la API
     await clienteAxios.post('/inspecciones/', payload);
 
-    // 5. Éxito
+    // 4. Éxito
     drawerInspeccion.value = false;
     await Swal.fire({
         icon: 'success',
         title: 'Inspección guardada',
         text: 'La inspección se guardó y firmó correctamente.',
         confirmButtonText: 'Aceptar'
-      })
+    })
 
   } catch (e) {
     console.error("Error detallado:", e.response?.data);
-    // Si Django nos dice qué campo falta, lo mostramos
     const errorMsg = e.response?.data ? JSON.stringify(e.response.data) : 'Error de conexión';
     await Swal.fire({
       icon: 'error',
       title: 'Error al guardar',
       text: errorMsg ?? 'Ocurrió un problema inesperado'
     })
-
   }
 }
 </script>
