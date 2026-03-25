@@ -7,12 +7,11 @@ import DashboardGlobal from './views/DashboardGlobal.vue'
 import UsuariosGestion from './views/UsuariosGestion.vue'
 import DashAdmin from './views/DashAdmin.vue'
 import DashOpeView from './views/DashOpeView.vue'
-import SolicitudEdicion from './views/SolicitudEdicion.vue'
+
 import Registrar from './views/Registrar.vue'
 import Detalles from './views/Detalles.vue'
 import Bitacora from './views/Bitacora.vue'
-import SolicitudesOpe from './views/SolicitudesOpe.vue'
-import NuevaInspeccion from './views/NuevaInspeccion.vue'
+
 import GestionInspecciones from './views/GestionInspecciones.vue'
 import Detallesauto from './views/Detallesauto.vue'
 import MisSolicitudes from './views/MisSolicitudes.vue'
@@ -41,12 +40,12 @@ const routes = [
 
   // 🔹 SOLICITUDES
   { path: '/GestionSoli', component: GestionSoliAdmin, meta: { requiresAuth: true, roles: ['ADMIN'] } },
-  { path: '/solicitudes-operador', component: SolicitudesOpe, meta: { requiresAuth: true, roles: ['OPERADOR'] } },
+
   { path: '/MisSolicitudes', component: MisSolicitudes, meta: { requiresAuth: true, roles: ['OPERADOR'] } },
-  { path: '/edicionregistro', component: SolicitudEdicion, meta: { requiresAuth: true, roles: ['OPERADOR'] } },
+  
 
   // 🔹 INSPECCIONES
-  { path: '/nuevaInspeccion', component: NuevaInspeccion, meta: { requiresAuth: true, roles: ['OPERADOR'] } },
+
   { path: '/GestionInspecciones', component: GestionInspecciones, meta: { requiresAuth: true, roles: ['ADMIN'] } },
   { path: '/MisInspecciones', component: MisInspecciones, meta: { requiresAuth: true, roles: ['OPERADOR'] } },
 
