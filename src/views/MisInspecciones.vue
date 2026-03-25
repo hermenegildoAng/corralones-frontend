@@ -146,7 +146,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { MagnifyingGlassIcon, ClipboardDocumentListIcon, CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon, UserIcon } from '@heroicons/vue/24/outline'
-import { onMounted } from 'vue'
+
 import clienteAxios from '../api/axios'
 
 const busqueda = ref('')
