@@ -12,6 +12,7 @@ import Registrar from './views/Registrar.vue'
 import Detalles from './views/Detalles.vue'
 import Bitacora from './views/Bitacora.vue'
 
+
 import GestionInspecciones from './views/GestionInspecciones.vue'
 import Detallesauto from './views/Detallesauto.vue'
 import MisSolicitudes from './views/MisSolicitudes.vue'
@@ -42,9 +43,6 @@ const routes = [
   { path: '/GestionSoli', component: GestionSoliAdmin, meta: { requiresAuth: true, roles: ['ADMIN'] } },
 
   { path: '/MisSolicitudes', component: MisSolicitudes, meta: { requiresAuth: true, roles: ['OPERADOR'] } },
-  
-
-  // 🔹 INSPECCIONES
 
   { path: '/GestionInspecciones', component: GestionInspecciones, meta: { requiresAuth: true, roles: ['ADMIN'] } },
   { path: '/MisInspecciones', component: MisInspecciones, meta: { requiresAuth: true, roles: ['OPERADOR'] } },
