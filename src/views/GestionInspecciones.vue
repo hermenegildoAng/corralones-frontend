@@ -88,7 +88,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { EyeIcon, MagnifyingGlassIcon,  ClipboardDocumentListIcon, CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
-import { onMounted } from 'vue'
+
 import clienteAxios from '../api/axios'
 import { useAuthStore } from '../stores/auth'
 const router = useRouter()
@@ -166,7 +166,5 @@ onMounted(() => {
   pollingInterval = setInterval(cargarInspecciones, 15000)
 })
 
-onUnmounted(() => {
-  clearInterval(pollingInterval)
-})
+
 </script>
