@@ -240,6 +240,18 @@
         </div>
       </div>
     </div>
+    <!-- VISOR DE IMAGEN -->
+<div v-if="imagenVisor" 
+     class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+     @click.self="imagenVisor = null">
+  <div class="relative max-w-4xl w-full flex flex-col items-center">
+    <button @click="imagenVisor = null"
+      class="absolute -top-10 right-0 text-white/70 hover:text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+      <XMarkIcon class="w-5 h-5" /> Cerrar
+    </button>
+    <img :src="imagenVisor" class="max-h-[85vh] w-auto object-contain rounded-3xl" />
+  </div>
+</div>
   </div>
 </template>
 
@@ -250,7 +262,8 @@ import {
   InboxIcon, 
   ClockIcon, 
   CheckCircleIcon, 
-  XCircleIcon 
+  XCircleIcon,
+  XMarkIcon   
 } from '@heroicons/vue/24/outline'
 
 import clienteAxios from '../api/axios'
@@ -505,7 +518,8 @@ const confirmarRechazoFoto = async () => {
   }
 }
 
-const verImagen = (url) => window.open(url, '_blank')
+const imagenVisor = ref(null)
+const verImagen = (url) => { imagenVisor.value = url }
 onMounted(() => {
   cargarSolicitudes()
   cargarFotosPendientes()  // ← agregar esta línea
