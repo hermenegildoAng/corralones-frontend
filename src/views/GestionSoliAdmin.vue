@@ -242,7 +242,7 @@
     </div>
     <!-- VISOR DE IMAGEN -->
 <div v-if="imagenVisor" 
-     class="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+     class="fixed inset-0 z-200 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
      @click.self="imagenVisor = null">
   <div class="relative max-w-4xl w-full flex flex-col items-center">
     <button @click="imagenVisor = null"
