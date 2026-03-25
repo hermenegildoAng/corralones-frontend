@@ -144,7 +144,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { MagnifyingGlassIcon, ClipboardDocumentListIcon, CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon, UserIcon } from '@heroicons/vue/24/outline'
 import { onMounted } from 'vue'
 import clienteAxios from '../api/axios'
@@ -153,7 +153,7 @@ const busqueda = ref('')
 const filtroResultado = ref('TODOS')
 const drawerDetalle = ref(false)
 const inspeccionActiva = ref(null)
-
+let pollingInterval = null
 // DATA SIMULADA BASADA EN EL MODELO "Inspeccion"
 const misInspecciones = ref([])
 
@@ -201,11 +201,6 @@ const cargarInspecciones = async () => {
     console.error(error)
   }
 }
-
-onMounted(cargarInspecciones)
-
-onMounted(cargarInspecciones)
-
 const getEstiloResultado = (res) => {
   switch (res) {
     case 'APROBADO':
@@ -218,6 +213,16 @@ const getEstiloResultado = (res) => {
       return { bgIcono: 'bg-slate-50', colorTexto: 'text-slate-500', icon: ClipboardDocumentListIcon, bgBadge: 'bg-slate-50 border-slate-200' }
   }
 }
+onMounted(() => {
+  cargarInspecciones()
+  pollingInterval = setInterval(cargarInspecciones, 15000)
+})
+
+onUnmounted(() => {
+  clearInterval(pollingInterval)
+})
+
+
 
 </script>
 

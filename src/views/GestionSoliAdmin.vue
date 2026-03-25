@@ -244,7 +244,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted} from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { 
   MagnifyingGlassIcon, 
   InboxIcon, 
@@ -266,7 +266,7 @@ const solicitudAProcesar = ref(null)
 const loading = ref(false)
 
 const solicitudes = ref([])
-
+let pollingInterval = null
 const formatearValor = (valor) => {
   if (!valor) return 'N/A';
   if (valor === 'ARCHIVO_ADJUNTO') return '📷 Nueva Fotografía';
@@ -506,9 +506,19 @@ const confirmarRechazoFoto = async () => {
 }
 
 const verImagen = (url) => window.open(url, '_blank')
+
+
 onMounted(() => {
   cargarSolicitudes()
-  cargarFotosPendientes()  // ← agregar esta línea
+  cargarFotosPendientes()
+  pollingInterval = setInterval(() => {
+    cargarSolicitudes()
+    cargarFotosPendientes()
+  }, 15000)
+})
+
+onUnmounted(() => {
+  clearInterval(pollingInterval)
 })
 
 </script>

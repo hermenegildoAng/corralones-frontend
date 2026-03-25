@@ -342,13 +342,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue'
+
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { EyeIcon, PencilSquareIcon , CheckIcon, XMarkIcon} from '@heroicons/vue/24/outline'
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import clienteAxios from '../api/axios'
 import Swal from 'sweetalert2'
 import AppPaginator from '../components/AppPaginator.vue'
+let pollingInterval = null
 
 const auth          = useAuthStore()
 const router        = useRouter()
@@ -491,8 +493,8 @@ const usuariosFiltrados = computed(() => {
     const termino          = busqueda.value.toLowerCase()
     const coincideBusqueda = (user.nombre_user || '').toLowerCase().includes(termino)
                           || (user.username    || '').toLowerCase().includes(termino)
-    const esDeMiSede       = auth.rol === 'SUPER'
-                          || String(user.id_deposito) === String(auth.id_deposito)
+    const esDeMiSede = auth.rol === 'SUPER'
+                || String(user.id_deposito?.id || user.id_deposito) === String(auth.id_deposito)
     return !esUsuarioActual && coincideRol && coincideEstatus && coincideBusqueda && esDeMiSede
   })
 })
@@ -559,5 +561,10 @@ const claseEstatus = (estatus) =>
 onMounted(() => {
   cargarUsuarios()
   cargarSedes()
+  pollingInterval = setInterval(cargarUsuarios, 15000) // cada 15 segundos
+})
+
+onUnmounted(() => {
+  clearInterval(pollingInterval)
 })
 </script>

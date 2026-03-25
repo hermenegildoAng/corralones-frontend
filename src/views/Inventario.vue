@@ -147,7 +147,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import clienteAxios from '../api/axios'
@@ -225,8 +226,15 @@ const claseEstatus = (estatus) =>
     ? 'bg-green-50 text-green-600 border-green-100'
     : 'bg-blue-50 text-blue-600 border-blue-100'
 
+let pollingInterval = null
+
 onMounted(() => {
   cargarIngresos()
   cargarSedes()
+  pollingInterval = setInterval(cargarIngresos, 15000)
+})
+
+onUnmounted(() => {
+  clearInterval(pollingInterval)
 })
 </script>

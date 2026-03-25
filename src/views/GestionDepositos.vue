@@ -253,7 +253,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import clienteAxios from '../api/axios'
 import Swal from 'sweetalert2'
@@ -274,7 +274,7 @@ const loadingCP          = ref(false)
 const cpValidado         = ref(false)
 const cpError            = ref(false)
 const colonias           = ref([])
-
+let pollingInterval = null  
 const nuevoDep = ref({
   nombre: '', calle: '', colonia: '', cp: '', municipio: '',
   estado: '', telefono: '', correo: '', estatus_deposito: 'ACTIVO'
@@ -399,8 +399,14 @@ const claseEstatus = (estatus) =>
     : 'bg-red-50 text-red-600 border-red-100'
 
 const verDetalles = (id) => router.push(`/deposito/${id}`)
+onMounted(() => {
+  cargarDatos()
+  pollingInterval = setInterval(cargarDatos, 15000)
+})
 
-onMounted(cargarDatos)
+onUnmounted(() => {
+  clearInterval(pollingInterval)
+})
 </script>
 
 <style scoped>

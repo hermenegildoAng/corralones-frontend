@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { EyeIcon, MagnifyingGlassIcon,  ClipboardDocumentListIcon, CheckBadgeIcon, ExclamationTriangleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 import { onMounted } from 'vue'
@@ -98,6 +98,7 @@ const filtroResultado = ref('TODOS')
 
 
 const seleccion = ref({ folio: '...' })
+let pollingInterval = null
 
 
 
@@ -111,7 +112,7 @@ const inspeccionesFiltradas = computed(() => {
   let res = historial.value
 
   if (filtroResultado.value !== 'TODOS') {
-    res = res.filter(ins => Number(ins.administrador) === Number(auth.user_id))
+    res = res.filter(ins => ins.resultado === filtroResultado.value) // ← fix
   }
 
   if (busqueda.value.trim() !== '') {
@@ -138,13 +139,9 @@ const getEstiloResultado = (res) => {
   }
 }
 
-onMounted(async () => {
+const cargarInspecciones = async () => {
   try {
     const res = await clienteAxios.get('/inspecciones/')
-
-    console.log('INSPECCIONES:', res.data)
-    console.log('USER ID:', auth.user_id)
-
     historial.value = res.data
       .filter(ins => Number(ins.administrador) === Number(auth.user_id))
       .map(ins => ({
@@ -155,13 +152,21 @@ onMounted(async () => {
         folio: ins.ingreso_data?.folio || `Ingreso #${ins.ingreso}`,
         vehiculo: ins.ingreso_data?.vehiculo || `Vehículo ${ins.ingreso}`
       }))
-
   } catch (e) {
     console.error(e)
   }
-})
+}
 
 const irADetalles = (ingresoId) => {
   router.push(`/Detallesauto/${ingresoId}`)
 }
+
+onMounted(() => {
+  cargarInspecciones()
+  pollingInterval = setInterval(cargarInspecciones, 15000)
+})
+
+onUnmounted(() => {
+  clearInterval(pollingInterval)
+})
 </script>

@@ -166,7 +166,7 @@
 <script setup>
 
 import { MagnifyingGlassIcon, InboxIcon, ClockIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
-import { ref, computed, onMounted } from 'vue'  // ← agrega onMounted
+import { ref, computed, onMounted, onUnmounted } from 'vue'  // ← agrega onMounted
 import { useAuthStore } from '../stores/auth'    // ← agrega esto
 import clienteAxios from '../api/axios'   
 const auth = useAuthStore()
@@ -175,7 +175,7 @@ const filtroEstatus = ref('TODOS')
 const loading = ref(false)
 // DATA SIMULADA BASADA EN EL MODELO "SolicitudEdicion"
 const historialSolicitudes = ref([])
-
+let pollingInterval = null
 // Computed para manejar la caja de búsqueda y los dropdowns
 const solicitudesFiltradas = computed(() => {
   let resultado = historialSolicitudes.value
@@ -295,6 +295,14 @@ const cargarMisSolicitudes = async () => {
   }
 }
 
-onMounted(cargarMisSolicitudes)
+
+onMounted(() => {
+  cargarMisSolicitudes()
+  pollingInterval = setInterval(cargarMisSolicitudes, 15000)
+})
+
+onUnmounted(() => {
+  clearInterval(pollingInterval)
+})
 
 </script>
