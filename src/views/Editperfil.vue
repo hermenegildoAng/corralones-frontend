@@ -271,7 +271,7 @@
         <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
 
           <!-- Franja superior decorativa -->
-          <div class="h-1.5 w-full bg-gradient-to-r from-amber-400 via-orange-400 to-red-400"></div>
+          <div class="h-1.5 w-full bg-linear-to-r from-amber-400 via-orange-400 to-red-400"></div>
 
           <div class="p-8 md:p-10">
 
@@ -294,7 +294,7 @@
             <div class="bg-slate-50 rounded-2xl border border-slate-100 divide-y divide-slate-100 mb-8">
 
               <div v-if="pendingUsernameChange" class="flex items-center gap-3 px-5 py-4">
-                <UserCircleIcon class="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <UserCircleIcon class="w-4 h-4 text-slate-400 shrink-0" />
                 <div class="flex-1 min-w-0">
                   <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Usuario</p>
                   <p class="text-sm font-bold text-slate-700 truncate">{{ profile.username }}</p>
@@ -303,7 +303,7 @@
               </div>
 
               <div class="flex items-center gap-3 px-5 py-4">
-                <KeyIcon class="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <KeyIcon class="w-4 h-4 text-slate-400 shrink-0" />
                 <div class="flex-1">
                   <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Contraseña</p>
                   <div class="flex items-center gap-2 mt-0.5">
