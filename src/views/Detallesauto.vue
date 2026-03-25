@@ -258,9 +258,10 @@
               </div>
             </div>
           </div>
-          
-          <CodigoQr :contenido="vehiculo.num_serie" class="hidden lg:flex w-full" />
+          <!-- Daños y  <CodigoQr :contenido="vehiculo.num_serie" class="hidden lg:flex w-full" />
 
+           Siniestros -->
+          
           <div class="lg:col-span-2 space-y-8">
             
             <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm flex flex-col justify-center">
@@ -618,7 +619,7 @@
 <script setup>
 
 import { useAuthStore } from '../stores/auth'
-import CodigoQr from '../components/CodigoQR.vue'
+
 
 import {ArrowLeftIcon, PencilSquareIcon, ClipboardDocumentCheckIcon,
    DocumentArrowDownIcon, MagnifyingGlassPlusIcon, ScaleIcon, PhotoIcon, DocumentTextIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline'

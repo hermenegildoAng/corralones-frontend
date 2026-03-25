@@ -60,8 +60,9 @@
       <!-- PRODUCTIVIDAD / RENDIMIENTO (Tarjetas Compuestas) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <QRScanner />
-        <!-- Gestión de Solicitudes -->
+        
+        
+        <!-- Gestión de <QRScanner /> Solicitudes -->
         <!-- Gestión de Solicitudes + Fotos -->
         <section class="bg-white border border-slate-100 rounded-[2.5rem] p-8 lg:p-10 shadow-sm flex flex-col justify-between relative overflow-hidden">
           <div class="absolute inset-x-0 bottom-0 h-1 bg-amber-400"></div>
@@ -247,8 +248,6 @@ const today = new Date().toLocaleDateString('es-MX', {
   day: 'numeric', 
   month: 'long' 
 })
-import QRScanner from '../components/QRScanner.vue'
-
 // --- CONTADORES GLOBALES REACTIVOS ---
 const conteoUnidades = ref(0)
 const conteoOperadores = ref(0)
