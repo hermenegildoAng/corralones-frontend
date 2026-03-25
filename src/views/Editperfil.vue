@@ -68,7 +68,7 @@
         </div>
 
         <!-- FORM -->
-        <form v-else @submit.prevent="handleUpdate" class="space-y-8">
+        <form v-else @submit.prevent="handleSubmit" class="space-y-8">
 
           <!-- USERNAME -->
           <div>
@@ -89,7 +89,6 @@
                 ]"
                 @blur="validateUsername"
               />
-              <!-- Ícono de estado username -->
               <div class="absolute right-5 top-1/2 -translate-y-1/2">
                 <CheckCircleIcon v-if="profile.username && !usernameError" class="w-5 h-5 text-green-500" />
                 <ExclamationCircleIcon v-else-if="usernameError" class="w-5 h-5 text-red-400" />
@@ -159,7 +158,6 @@
                     <p :class="['text-[10px] font-black uppercase tracking-widest', passwordStrength.textColor]">
                       {{ passwordStrength.label }}
                     </p>
-                    <!-- Reglas visuales -->
                     <div class="flex gap-3">
                       <span
                         v-for="rule in passwordRules"
@@ -253,9 +251,109 @@
         </form>
 
       </section>
-
     </div>
   </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       MODAL DE CONFIRMACIÓN DE CONTRASEÑA
+  ══════════════════════════════════════════════════════════════════════ -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <div
+        v-if="showConfirmModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="cancelConfirm"
+      >
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+        <!-- Card -->
+        <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+
+          <!-- Franja superior decorativa -->
+          <div class="h-1.5 w-full bg-gradient-to-r from-amber-400 via-orange-400 to-red-400"></div>
+
+          <div class="p-8 md:p-10">
+
+            <!-- Ícono central -->
+            <div class="flex justify-center mb-6">
+              <div class="w-16 h-16 rounded-2xl bg-amber-50 border-2 border-amber-100 flex items-center justify-center shadow-inner">
+                <ShieldExclamationIcon class="w-8 h-8 text-amber-500" />
+              </div>
+            </div>
+
+            <!-- Título -->
+            <h3 class="text-center text-xl font-black text-slate-800 uppercase tracking-tighter mb-1">
+              Confirmar cambio
+            </h3>
+            <p class="text-center text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-8">
+              Esta acción modificará tu contraseña
+            </p>
+
+            <!-- Resumen de lo que se va a cambiar -->
+            <div class="bg-slate-50 rounded-2xl border border-slate-100 divide-y divide-slate-100 mb-8">
+
+              <div v-if="pendingUsernameChange" class="flex items-center gap-3 px-5 py-4">
+                <UserCircleIcon class="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Usuario</p>
+                  <p class="text-sm font-bold text-slate-700 truncate">{{ profile.username }}</p>
+                </div>
+                <span class="text-[9px] font-black text-blue-500 bg-blue-50 px-2 py-1 rounded-full uppercase tracking-wide">Nuevo</span>
+              </div>
+
+              <div class="flex items-center gap-3 px-5 py-4">
+                <KeyIcon class="w-4 h-4 text-slate-400 flex-shrink-0" />
+                <div class="flex-1">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Contraseña</p>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <div class="flex gap-1">
+                      <span v-for="i in 8" :key="i" class="w-2 h-2 rounded-full bg-slate-300 inline-block"></span>
+                    </div>
+                    <span :class="['text-[9px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full', passwordStrength.textColor,
+                      passwordStrength.score === 4 ? 'bg-green-50' :
+                      passwordStrength.score === 3 ? 'bg-yellow-50' :
+                      passwordStrength.score === 2 ? 'bg-orange-50' : 'bg-red-50'
+                    ]">
+                      {{ passwordStrength.label }}
+                    </span>
+                  </div>
+                </div>
+                <span class="text-[9px] font-black text-amber-600 bg-amber-50 px-2 py-1 rounded-full uppercase tracking-wide">Cambia</span>
+              </div>
+
+            </div>
+
+            <!-- Advertencia -->
+            <p class="text-center text-[10px] text-slate-400 font-bold mb-8 leading-relaxed">
+              Tendrás que usar tu <span class="text-slate-600">nueva contraseña</span> la próxima vez que inicies sesión.
+            </p>
+
+            <!-- Botones -->
+            <div class="flex gap-3">
+              <button
+                type="button"
+                @click="cancelConfirm"
+                class="flex-1 py-3.5 rounded-2xl border-2 border-slate-200 text-slate-500 font-black text-[11px] uppercase tracking-widest hover:border-slate-300 hover:text-slate-700 transition-all duration-200"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                @click="confirmAndUpdate"
+                :disabled="confirmLoading"
+                class="flex-1 py-3.5 rounded-2xl bg-primario text-white font-black text-[11px] uppercase tracking-widest hover:bg-primario/90 hover:shadow-lg hover:shadow-primario/20 hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <span v-if="confirmLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                <span>{{ confirmLoading ? 'Guardando...' : 'Sí, confirmar' }}</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup>
@@ -264,7 +362,8 @@ import { useAuthStore } from '../stores/auth'
 import clienteAxios from '../api/axios'
 import {
   UserIcon, BuildingOfficeIcon, EnvelopeIcon, UserCircleIcon, KeyIcon,
-  EyeIcon, EyeSlashIcon, CheckCircleIcon, ExclamationCircleIcon
+  EyeIcon, EyeSlashIcon, CheckCircleIcon, ExclamationCircleIcon,
+  ShieldExclamationIcon
 } from '@heroicons/vue/24/outline'
 
 const auth = useAuthStore()
@@ -276,6 +375,9 @@ const profile = ref({
   username: '', nombre_user: '', email: '', rol: '', corralon: ''
 })
 
+// Username original para detectar si cambió
+const originalUsername = ref('')
+
 const passwordData = ref({
   newPassword: '', confirmPassword: ''
 })
@@ -283,6 +385,15 @@ const passwordData = ref({
 // ── Mostrar/ocultar contraseñas ──────────────────────────────────────────────
 const showNew     = ref(false)
 const showConfirm = ref(false)
+
+// ── Modal de confirmación ────────────────────────────────────────────────────
+const showConfirmModal = ref(false)
+const confirmLoading   = ref(false)
+
+// ── Detectar si el username cambió ──────────────────────────────────────────
+const pendingUsernameChange = computed(() =>
+  profile.value.username.trim() !== originalUsername.value
+)
 
 // ── Errores individuales ─────────────────────────────────────────────────────
 const usernameError    = ref('')
@@ -314,7 +425,6 @@ const passwordRules = computed(() => [
 // ── Nivel de fortaleza (0–4) ─────────────────────────────────────────────────
 const passwordStrength = computed(() => {
   const score = passwordRules.value.filter(r => r.met).length
-
   const map = {
     0: { score: 0, label: '',           color: 'bg-slate-200',  textColor: 'text-slate-300' },
     1: { score: 1, label: 'Muy débil',  color: 'bg-red-400',    textColor: 'text-red-400'   },
@@ -337,7 +447,6 @@ const validateNewPassword = () => {
   } else {
     newPasswordError.value = ''
   }
-  // revalidar confirmar si ya tiene contenido
   if (passwordData.value.confirmPassword) validateConfirm()
 }
 
@@ -357,17 +466,12 @@ const validateConfirm = () => {
 // ── ¿El formulario es válido para enviar? ────────────────────────────────────
 const isFormValid = computed(() => {
   const usernameOk = profile.value.username.trim().length >= 3 && !usernameError.value
-
-  // Si no escribió contraseña nueva, se permite guardar solo el username
   if (!passwordData.value.newPassword) return usernameOk
-
-  // Si escribió contraseña, debe pasar todas las validaciones
   const passwordOk =
     !newPasswordError.value &&
     !confirmError.value &&
     passwordData.value.newPassword === passwordData.value.confirmPassword &&
     passwordData.value.newPassword.length >= 8
-
   return usernameOk && passwordOk
 })
 
@@ -376,8 +480,6 @@ onMounted(async () => {
   try {
     const userId = auth.user_id || sessionStorage.getItem('user_id')
     const res = await clienteAxios.get(`usuarios/${userId}/`)
-
-    // ✅ Valores por defecto por si algún campo no viene en la respuesta
     const {
       username    = '',
       nombre_user = '',
@@ -385,9 +487,8 @@ onMounted(async () => {
       rol         = '',
       corralon    = ''
     } = res.data ?? {}
-
     profile.value = { username, nombre_user, email, rol, corralon }
-
+    originalUsername.value = username
   } catch (err) {
     console.error('Error al cargar perfil:', err)
     errorMsg.value = err.response?.data?.detail || 'Error al cargar perfil'
@@ -395,24 +496,46 @@ onMounted(async () => {
     loading.value = false
   }
 })
-// ── Guardar cambios ──────────────────────────────────────────────────────────
-const handleUpdate = async () => {
-  // Disparar todas las validaciones antes de enviar
+
+// ── handleSubmit: decide si mostrar modal o guardar directamente ─────────────
+const handleSubmit = () => {
   validateUsername()
   if (passwordData.value.newPassword) {
     validateNewPassword()
     validateConfirm()
   }
-
   if (!isFormValid.value) return
 
+  // Si hay cambio de contraseña → mostrar modal de confirmación
+  if (passwordData.value.newPassword) {
+    showConfirmModal.value = true
+    return
+  }
+
+  // Solo cambio de username → guardar directo sin modal
+  handleUpdate()
+}
+
+// ── Cancelar desde el modal ──────────────────────────────────────────────────
+const cancelConfirm = () => {
+  showConfirmModal.value = false
+}
+
+// ── Confirmar desde el modal → ejecutar la petición ─────────────────────────
+const confirmAndUpdate = async () => {
+  confirmLoading.value = true
+  await handleUpdate()
+  confirmLoading.value = false
+  showConfirmModal.value = false
+}
+
+// ── Guardar cambios (lógica real) ────────────────────────────────────────────
+const handleUpdate = async () => {
   try {
     errorMsg.value   = ''
     successMsg.value = ''
 
-    // ✅ Fix 1: Usar sessionStorage en lugar de localStorage
     const userId = auth.user_id || sessionStorage.getItem('user_id')
-
     const payload = { username: profile.value.username }
     if (passwordData.value.newPassword) {
       payload.password = passwordData.value.newPassword
@@ -420,17 +543,39 @@ const handleUpdate = async () => {
 
     await clienteAxios.patch(`usuarios/${userId}/`, payload)
 
-    // ✅ Fix 4: El mensaje de éxito desaparece automáticamente tras 4 segundos
+    originalUsername.value = profile.value.username
     successMsg.value = 'Perfil actualizado correctamente'
     setTimeout(() => { successMsg.value = '' }, 4000)
 
-    // Limpiar campos de contraseña tras éxito
     passwordData.value = { newPassword: '', confirmPassword: '' }
 
   } catch (err) {
-    // ✅ Fix 3: Loguear el error real y mostrar mensaje del backend si existe
     console.error('Error al actualizar perfil:', err)
     errorMsg.value = err.response?.data?.detail || 'Error al actualizar el perfil'
   }
 }
 </script>
+
+<style scoped>
+/* Transición del modal */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.modal-enter-active .relative,
+.modal-leave-active .relative {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+.modal-enter-from .relative {
+  transform: scale(0.92) translateY(12px);
+  opacity: 0;
+}
+.modal-leave-to .relative {
+  transform: scale(0.95) translateY(8px);
+  opacity: 0;
+}
+</style>

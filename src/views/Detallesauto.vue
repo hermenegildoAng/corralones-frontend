@@ -1,20 +1,15 @@
 <template>
-
-
     <div v-if="loading" class="flex flex-col justify-center items-center h-screen gap-4">
           <div class="w-12 h-12 border-4 border-primario border-t-transparent rounded-full animate-spin"></div>
           <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Sincronizando Expediente...</p>
         </div>
 
   <div v-else-if="!loading && vehiculo && ingreso" class="flex min-h-screen bg-slate-50 font-sans relative overflow-x-hidden">
-  
-
     
     <button @click="router.back()" class="absolute top-4 left-6 md:top-6 md:left-10 z-20 flex items-center gap-2 text-slate-500 hover:text-primario transition-colors bg-white px-5 py-2.5 rounded-full border border-slate-200 shadow-sm hover:shadow-md">
             <ArrowLeftIcon class="w-4 h-4" />
             <span class="text-[10px] font-black uppercase tracking-widest">Regresar</span>
           </button>
-
 
     <transition name="drawer-left">
       <aside v-if="drawerSolicitud" class="fixed left-0 top-0 h-screen w-112.5 bg-white border-r border-slate-200 shadow-2xl z-70 flex flex-col p-10 overflow-y-auto">
@@ -169,8 +164,6 @@
           </div>
 
           <div class="flex items-center gap-6">
-            
-
             <div class="flex flex-col gap-4 bg-white p-6 rounded-[2.5rem] shadow-xl border border-slate-100 h-full justify-center">
               <div v-if="auth.rol === 'OPERADOR'" class="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest italic">Modo Edición</span>
@@ -193,7 +186,7 @@
 
         <section class="flex flex-col gap-4 mb-10 w-full">
           
-          <div class="w-full aspect-21/9   md:aspect-3/1 bg-slate-50 rounded-[3rem] p-2 border border-slate-200 shadow-sm relative overflow-hidden group cursor-zoom-in flex items-center justify-center">
+          <div class="w-full aspect-21/9 md:aspect-3/1 bg-slate-50 rounded-[3rem] p-2 border border-slate-200 shadow-sm relative overflow-hidden group cursor-zoom-in flex items-center justify-center">
             
             <img 
               v-if="galeriaFotos.length > 0" 
@@ -249,8 +242,7 @@
             <h3 class="text-[10px] font-black text-primario uppercase tracking-[0.3em] mb-8">Datos de Unidad (Vehiculo)</h3>
             <div class="grid grid-cols-2 gap-y-10 gap-x-6">
               <div v-for="campo in camposVehiculo" :key="campo.label">
-                <p class="text-[9px] text-primario font-black uppercase tracking-widest mb-1 transition-colors"
-                  >
+                <p class="text-[9px] text-primario font-black uppercase tracking-widest mb-1 transition-colors">
                   {{ campo.titulo }}
                 </p>
                 <button
@@ -278,13 +270,9 @@
               
               <div class="grid grid-cols-2 gap-y-8 gap-x-6">
                 <div v-for="campo in camposIngreso" :key="campo.label" class="relative group">
-                  <p class="text-[9px] font-black text-primario uppercase tracking-widest mb-2 flex justify-between items-center"
-                     >
+                  <p class="text-[9px] font-black text-primario uppercase tracking-widest mb-2 flex justify-between items-center">
                     {{ campo.titulo }}
-                    
-                    
                   </p>
-
                   <div class="w-full text-left p-3 rounded-xl text-xs font-black uppercase transition-all duration-300 bg-slate-50 text-slate-600 border border-transparent cursor-default">
                     {{ ingreso[campo.label] || 'N/A' }}
                   </div>
@@ -293,13 +281,11 @@
             </div>
 
             <!-- Estado Físico y Mecánico -->
-          <!-- Estado Físico y Mecánico -->
             <div class="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-sm flex flex-col justify-center">
               <h3 class="text-[10px] font-black text-primario uppercase tracking-[0.3em] mb-8">Estado Físico y Mecánico</h3>
               <div class="grid grid-cols-2 gap-y-10 gap-x-8">
                 <div v-for="campo in camposMecanica" :key="campo.label">
-                  <p class="text-[9px] text-primario font-black uppercase tracking-widest mb-1 transition-colors"
-                    >
+                  <p class="text-[9px] text-primario font-black uppercase tracking-widest mb-1 transition-colors">
                     {{ campo.titulo }}
                   </p>
                   <button
@@ -321,8 +307,7 @@
               <h3 class="text-[10px] font-black text-primario uppercase tracking-[0.3em] mb-8">Niveles de Líquidos y Seguridad</h3>
               <div class="grid grid-cols-2 gap-y-10 gap-x-8">
                 <div v-for="campo in camposLiquidos" :key="campo.label">
-                  <p class="text-[9px] text-primario font-black uppercase tracking-widest mb-1 transition-colors"
-                    >
+                  <p class="text-[9px] text-primario font-black uppercase tracking-widest mb-1 transition-colors">
                     {{ campo.titulo }}
                   </p>
                   <button
@@ -339,186 +324,172 @@
               </div>
             </div>
 
-          <!-- Bloque Estatus Legal Nuevo -->
-          <div class="lg:col-span-2 bg-indigo-50/50 rounded-[3rem] p-10 border border-indigo-100 shadow-sm flex flex-col md:flex-row gap-8 items-center">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-indigo-50 flex items-center justify-center">
-              <ScaleIcon class="w-16 h-16 text-indigo-400" />
-            </div>
-            <div class="flex-1 space-y-4 w-full">
-              <div class="flex justify-between items-start">
-                <div>
-                  <h3 class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em]">Documentación Jurídica</h3>
-                  <p class="text-xl font-black text-slate-800 uppercase mt-1">{{ estatusLegal.condicion }}</p>
-                </div>
-                <!-- 
-                <button v-if="modoEdicion" @click="abrirEditor('Condición Jurídica', estatusLegal.condicion)" class="text-[8px] font-black text-primario uppercase bg-white px-3 py-1 rounded-full border border-primario/20">Editar</button>
-                -->
+            <!-- Bloque Estatus Legal -->
+            <div class="lg:col-span-2 bg-indigo-50/50 rounded-[3rem] p-10 border border-indigo-100 shadow-sm flex flex-col md:flex-row gap-8 items-center">
+              <div class="bg-white p-6 rounded-3xl shadow-sm border border-indigo-50 flex items-center justify-center">
+                <ScaleIcon class="w-16 h-16 text-indigo-400" />
               </div>
-              
-              <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white p-4 rounded-2xl border border-indigo-50">
-                  <p class="text-[8px] font-black text-primario uppercase tracking-widest">Núm. Oficio</p>
-                  <p class="font-bold text-slate-700 uppercase mt-1 text-sm">{{ estatusLegal.oficio }}</p>
+              <div class="flex-1 space-y-4 w-full">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <h3 class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em]">Documentación Jurídica</h3>
+                    <p class="text-xl font-black text-slate-800 uppercase mt-1">{{ estatusLegal.condicion }}</p>
+                  </div>
                 </div>
-                <div class="bg-white p-4 rounded-2xl border border-indigo-50">
-                  <p class="text-[8px] font-black text-primario uppercase tracking-widest">Fecha Oficio</p>
-                  <p class="font-bold text-primario uppercase mt-1 text-sm">{{ estatusLegal.fecha }}</p>
-                </div>
-              </div>
-
-              <div class="bg-white p-4 rounded-2xl border border-indigo-50 relative group">
-                <p class="text-[8px] font-black text-primario uppercase tracking-widest">Observaciones</p>
-                <p class="font-medium text-primario text-xs mt-1 italic leading-relaxed">{{ estatusLegal.observaciones }}</p>
-                 <!-- 
-                <button v-if="modoEdicion" @click="abrirEditor('Obs. Legales', estatusLegal.observaciones)" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 text-primario transition-all"><PencilSquareIcon class="w-4 h-4"/></button>
-              -->
-              </div>
-            </div>
-          </div>
-
-
-          <div class="lg:col-span-2">
-            <div class="flex justify-between items-center mb-6 ml-6 pr-6">
-              <h3 class="text-[10px] font-black text-primario uppercase tracking-[0.3em]">Inventario de Objetos</h3>
-              
-              <button v-if="modoEdicion" @click="abrirEditorNuevoObjeto('Añadir Objeto', '')" class="text-[9px] font-black text-primario uppercase tracking-widest border-b border-primario/30">+ Reportar nuevo objeto</button>
-           
-              
-               </div>
-
-            <div v-if="objetos.length === 0" class="bg-white p-10 rounded-[2.5rem] border border-dashed border-slate-200 text-center">
-              <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">No se registraron pertenencias en el inventario</p>
-            </div>
-
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              <div v-for="obj in objetos" :key="obj.id" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-4 group transition-all hover:border-primario/20">
                 
-                <div class="w-16 h-16 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100 relative shrink-0">
-                  <img :src="obj.foto_objeto || 'https://via.placeholder.com/150?text=OBJ'" 
-                      class="w-full h-full object-cover cursor-zoom-in hover:opacity-80 transition-opacity" 
-                      @click.stop="abrirModalImg(obj.foto_objeto, obj.descripcion)" />
-                  <!--
-                      <button v-if="modoEdicion" 
-                          @click.stop="abrirEditorNuevoObjeto('Foto: ' + obj.descripcion, obj.foto_objeto, true, obj.id, 'ObjetoPersonal')"class="absolute inset-0 bg-primario/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[8px] font-black uppercase">
-                    Cambiar
-                  </button>
-                -->
-                  
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-white p-4 rounded-2xl border border-indigo-50">
+                    <p class="text-[8px] font-black text-primario uppercase tracking-widest">Núm. Oficio</p>
+                    <p class="font-bold text-slate-700 uppercase mt-1 text-sm">{{ estatusLegal.oficio }}</p>
+                  </div>
+                  <div class="bg-white p-4 rounded-2xl border border-indigo-50">
+                    <p class="text-[8px] font-black text-primario uppercase tracking-widest">Fecha Oficio</p>
+                    <p class="font-bold text-primario uppercase mt-1 text-sm">{{ estatusLegal.fecha }}</p>
+                  </div>
                 </div>
 
-                <div class="flex-1 min-w-0">
-                  <p class="text-xs font-black text-primario uppercase truncate">{{ obj.descripcion }}</p>
-                  <p class="text-[9px] font-bold text-primario uppercase mt-1">
-                    {{ obj.cantidad }} PZA • <span class="text-primario/60">{{ obj.estado || 'BUENO' }}</span>
-                  </p>
+                <div class="bg-white p-4 rounded-2xl border border-indigo-50 relative group">
+                  <p class="text-[8px] font-black text-primario uppercase tracking-widest">Observaciones</p>
+                  <p class="font-medium text-primario text-xs mt-1 italic leading-relaxed">{{ estatusLegal.observaciones }}</p>
                 </div>
-
-                <!--
-                  <button v-if="modoEdicion" 
-                        @click="abrirEditor('Objeto: ' + obj.descripcion, obj.estado, false, obj.id, 'ObjetoPersonal')"
-                        class="p-1 text-primario bg-primario/5 rounded-lg hover:bg-primario/10 transition-all">
-                  <PencilSquareIcon class="w-4 h-4" />
-                </button>
-                -->
-                
               </div>
             </div>
-          </div>
 
+            <!-- Inventario de Objetos -->
+            <div class="lg:col-span-2">
+              <div class="flex justify-between items-center mb-6 ml-6 pr-6">
+                <h3 class="text-[10px] font-black text-primario uppercase tracking-[0.3em]">Inventario de Objetos</h3>
+                <button v-if="modoEdicion" @click="abrirEditorNuevoObjeto('Añadir Objeto', '')" class="text-[9px] font-black text-primario uppercase tracking-widest border-b border-primario/30">+ Reportar nuevo objeto</button>
+              </div>
 
-          <div class="lg:col-span-2">
-            <div class="flex justify-between items-center mb-6 ml-6 pr-6">
-              <h3 class="text-[10px] font-black text-red-400 uppercase tracking-[0.3em]">Daños y Siniestros Registrados</h3>
-              <button v-if="modoEdicion" @click="abrirEditorNuevoDano('Añadir Daño', '')" class="text-[9px] font-black text-primario uppercase tracking-widest border-b border-primario/30">+ Reportar nuevo daño</button>
-            </div>
-            
-            <div v-if="danos.length === 0" class="bg-white p-10 rounded-[2.5rem] border border-dashed border-slate-200 text-center">
-              <p class="text-[10px] font-black text-primario uppercase tracking-widest">Sin daños físicos reportados</p>
-            </div>
+              <div v-if="objetos.length === 0" class="bg-white p-10 rounded-[2.5rem] border border-dashed border-slate-200 text-center">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">No se registraron pertenencias en el inventario</p>
+              </div>
 
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div v-for="dano in danos" :key="dano.id" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-start gap-5 group relative overflow-hidden">
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-red-400"></div>
-
-                <div class="w-24 h-24 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100 shrink-0 relative">
-                  <img :src="dano.foto_evidencia || 'https://via.placeholder.com/150?text=Sin+Foto'" 
-                      class="w-full h-full object-cover cursor-zoom-in hover:opacity-80 transition-opacity" 
-                      @click.stop="abrirModalImg(dano.foto_evidencia, dano.parte_vehiculo)"/>
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div v-for="obj in objetos" :key="obj.id" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center gap-4 group transition-all hover:border-primario/20">
                   
-                  <button v-if="modoEdicion" 
-                         @click.stop="abrirEditorNuevoDano('Evidencia Daño: ' + dano.parte_vehiculo, dano.foto_evidencia, true, dano.id, 'RegistroDano')"
-                          class="absolute inset-0 bg-primario/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[8px] font-black uppercase">
-                    Sustituir
-                  </button>
-                </div>
+                  <div class="w-16 h-16 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100 relative shrink-0">
+                    <img 
+                      :src="urlMedia(obj.foto_objeto) || 'https://via.placeholder.com/150?text=OBJ'" 
+                      class="w-full h-full object-cover cursor-zoom-in hover:opacity-80 transition-opacity" 
+                      @click.stop="abrirModalImg(urlMedia(obj.foto_objeto), obj.descripcion)" 
+                    />
+                  </div>
 
-                <div class="flex-1">
-                  <div class="flex justify-between items-start">
-                    <p class="text-xs font-black text-primario uppercase">{{ dano.parte_vehiculo }}</p>
-                    <button v-if="modoEdicion" @click="abrirEditor('Daño: ' + dano.parte_vehiculo, dano.descripcion, false, dano.id, 'RegistroDano')"
-                       class="p-1 text-primario bg-primario/5 rounded-lg hover:bg-primario/10 transition-all">
-                      <PencilSquareIcon class="w-4 h-4" />
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs font-black text-primario uppercase truncate">{{ obj.descripcion }}</p>
+                    <p class="text-[9px] font-bold text-primario uppercase mt-1">
+                      {{ obj.cantidad }} PZA • <span class="text-primario/60">{{ obj.estado || 'BUENO' }}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Daños y Siniestros -->
+            <div class="lg:col-span-2">
+              <div class="flex justify-between items-center mb-6 ml-6 pr-6">
+                <h3 class="text-[10px] font-black text-red-400 uppercase tracking-[0.3em]">Daños y Siniestros Registrados</h3>
+                <button v-if="modoEdicion" @click="abrirEditorNuevoDano('Añadir Daño', '')" class="text-[9px] font-black text-primario uppercase tracking-widest border-b border-primario/30">+ Reportar nuevo daño</button>
+              </div>
+              
+              <div v-if="danos.length === 0" class="bg-white p-10 rounded-[2.5rem] border border-dashed border-slate-200 text-center">
+                <p class="text-[10px] font-black text-primario uppercase tracking-widest">Sin daños físicos reportados</p>
+              </div>
+
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div v-for="dano in danos" :key="dano.id" class="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-start gap-5 group relative overflow-hidden">
+                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-red-400"></div>
+
+                  <div class="w-24 h-24 rounded-2xl bg-slate-50 overflow-hidden border border-slate-100 shrink-0 relative">
+                    <img 
+                      :src="urlMedia(dano.foto_evidencia) || 'https://via.placeholder.com/150?text=Sin+Foto'" 
+                      class="w-full h-full object-cover cursor-zoom-in hover:opacity-80 transition-opacity" 
+                      @click.stop="abrirModalImg(urlMedia(dano.foto_evidencia), dano.parte_vehiculo)"
+                    />
+                    
+                    <button v-if="modoEdicion" 
+                           @click.stop="abrirEditorNuevoDano('Evidencia Daño: ' + dano.parte_vehiculo, dano.foto_evidencia, true, dano.id, 'RegistroDano')"
+                            class="absolute inset-0 bg-primario/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[8px] font-black uppercase">
+                      Sustituir
                     </button>
                   </div>
 
-                  <p class="text-[11px] text-primario font-medium leading-relaxed mt-2 italic">"{{ dano.descripcion }}"</p>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start">
+                      <p class="text-xs font-black text-primario uppercase">{{ dano.parte_vehiculo }}</p>
+                      <button v-if="modoEdicion" @click="abrirEditor('Daño: ' + dano.parte_vehiculo, dano.descripcion, false, dano.id, 'RegistroDano')"
+                         class="p-1 text-primario bg-primario/5 rounded-lg hover:bg-primario/10 transition-all">
+                        <PencilSquareIcon class="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <p class="text-[11px] text-primario font-medium leading-relaxed mt-2 italic">"{{ dano.descripcion }}"</p>
+                    
+                    <p class="text-[10px] font-black text-primario uppercase mt-3 tracking-tighter italic">
+                      Registrado: {{ dano.fecha_registro ? new Date(dano.fecha_registro).toLocaleDateString() : 'N/A' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Documentos Indexados -->
+            <div class="lg:col-span-2">
+              <div class="flex justify-between items-center mb-6 ml-6 pr-6">
+                <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Documentos Indexados</h3>
+                <button v-if="modoEdicion" @click="abrirEditorDocumento('Subir Documento', '', true)" class="text-[9px] font-black text-primario uppercase tracking-widest border-b border-primario/30">+ Indexar nuevo archivo</button>
+              </div>
+              
+              <div v-if="documentos.length === 0" class="bg-white p-10 rounded-[2.5rem] border border-dashed border-slate-200 text-center">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Sin documentos indexados</p>
+              </div>
+
+              <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div v-for="doc in documentos" :key="doc.id" class="bg-white p-4 rounded-4xl border border-slate-100 shadow-sm flex items-center gap-4 group">
                   
-                  <p class="text-[10px] font-black text-primario uppercase mt-3 tracking-tighter italic">
-                    Registrado: {{ dano.fecha_registro ? new Date(dano.fecha_registro).toLocaleDateString() : 'N/A' }}
-                  </p>
+                  <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0 text-indigo-400">
+                    <DocumentTextIcon v-if="doc.nombre_documento.toLowerCase().includes('oficio') || doc.nombre_documento.toLowerCase().includes('factura')" class="w-6 h-6" />
+                    <PhotoIcon v-else class="w-6 h-6" />
+                  </div>
+
+                  <div class="flex-1 overflow-hidden">
+                    <p class="text-[10px] font-black text-slate-700 uppercase truncate" :title="doc.nombre_documento">
+                      {{ doc.nombre_documento || 'Documento sin nombre' }}
+                    </p>
+                    <p class="text-[8px] font-bold text-slate-400 uppercase mt-1">
+                      {{ doc.tipo || 'Archivo' }}
+                    </p>
+                  </div>
+
+                  <!-- PDF: abre en modal con Google Docs Viewer -->
+                  <button 
+                    v-if="esArchivoVisualizablePDF(doc.archivo)"
+                    @click="abrirModalPDF(doc.archivo, doc.nombre_documento)" 
+                    class="p-2 bg-indigo-50 text-indigo-400 rounded-lg hover:bg-indigo-100 transition-all"
+                    title="Ver documento"
+                  >
+                    <ArrowTopRightOnSquareIcon class="w-4 h-4" />
+                  </button>
+                  
+                  <!-- Imagen: abre en modal normal -->
+                  <button 
+                    v-else-if="doc.archivo"
+                    @click="abrirModalImg(urlMedia(doc.archivo), doc.nombre_documento)" 
+                    class="p-2 bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-all"
+                    title="Ver imagen"
+                  >
+                    <MagnifyingGlassPlusIcon class="w-4 h-4" />
+                  </button>
+
+                  <!-- Sin archivo -->
+                  <span v-else class="text-[9px] text-slate-300 font-bold uppercase">Sin archivo</span>
                 </div>
               </div>
             </div>
+
           </div>
-
-          <div class="lg:col-span-2">
-            <div class="flex justify-between items-center mb-6 ml-6 pr-6">
-              <h3 class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Documentos Indexados</h3>
-              <button v-if="modoEdicion" @click="abrirEditorDocumento('Subir Documento', '', true)" class="text-[9px] font-black text-primario uppercase tracking-widest border-b border-primario/30">+ Indexar nuevo archivo</button>
-            </div>
-            
-            <div v-if="documentos.length === 0" class="bg-white p-10 rounded-[2.5rem] border border-dashed border-slate-200 text-center">
-              <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Sin documentos indexados</p>
-            </div>
-
-            <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div v-for="doc in documentos" :key="doc.id" class="bg-white p-4 rounded-4xl border border-slate-100 shadow-sm flex items-center gap-4 group">
-                
-                <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0 text-indigo-400">
-                  <DocumentTextIcon v-if="doc.nombre_documento.toLowerCase().includes('oficio') || doc.nombre_documento.toLowerCase().includes('factura')" class="w-6 h-6" />
-                  <PhotoIcon v-else class="w-6 h-6" />
-                </div>
-
-                <div class="flex-1 overflow-hidden">
-                  <p class="text-[10px] font-black text-slate-700 uppercase truncate" :title="doc.nombre_documento">
-                    {{ doc.nombre_documento || 'Documento sin nombre' }}
-                  </p>
-                  <p class="text-[8px] font-bold text-slate-400 uppercase mt-1">
-                    {{ doc.tipo || 'Archivo' }}
-                  </p>
-                </div>
-
-                <button 
-                  v-if="doc.archivo?.toLowerCase().endsWith('.pdf')" 
-                  @click="abrirPDF(doc.archivo)" 
-                  class="p-2 bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-all"
-                >
-                  <ArrowTopRightOnSquareIcon class="w-4 h-4" />
-                </button>
-                
-                <button 
-                  v-else 
-                  @click="abrirModalImg(doc.archivo, doc.nombre_documento)" 
-                  class="p-2 bg-slate-50 text-slate-400 rounded-lg hover:bg-slate-100 transition-all"
-                >
-                  <MagnifyingGlassPlusIcon class="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          
-
         </div>
       </div>
     </div>
@@ -544,7 +515,7 @@
           <div class="space-y-4">
             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4">Veredicto</label>
             <div class="grid grid-cols-1 gap-2">
-              <button v-for="res in RESULTADOS_INS" :key="res.value" @click="formInspeccion.resultado = res.value" :class="['py-4 px-6 rounded-2xl text-[9px] font-black uppercase border-2 transition-all text-left flex justify-between items-center', formInspeccion.resultado === res.value ? 'bg-primario  text-white shadow-xl' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200']">
+              <button v-for="res in RESULTADOS_INS" :key="res.value" @click="formInspeccion.resultado = res.value" :class="['py-4 px-6 rounded-2xl text-[9px] font-black uppercase border-2 transition-all text-left flex justify-between items-center', formInspeccion.resultado === res.value ? 'bg-primario text-white shadow-xl' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200']">
                 {{ res.label }}
               </button>
             </div>
@@ -560,38 +531,101 @@
       </aside>
     </transition>
 
-   
-    <!-- Elemento Modal para Zoom de Imágenes -->
+    <!-- Modal para Zoom de Imágenes y PDFs -->
     <transition name="fade">
-      <div v-if="modalImagen.show" class="fixed inset-0 z-100 bg-black/95 backdrop-blur-md flex items-center justify-center p-4" @click="modalImagen.show = false">
-        <button @click="modalImagen.show = false" class="absolute top-10 right-10 text-white/50 hover:text-white transition-colors p-4 bg-white/5 rounded-full backdrop-blur">✕</button>
-        <img :src="modalImagen.url" class="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl ring-1 ring-white/10 select-none" @click.stop />
-        <span class="absolute bottom-10 bg-black/50 px-6 py-2 rounded-full text-white/70 text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur">{{ modalImagen.titulo }}</span>
+      <div v-if="modalImagen.show" class="fixed inset-0 z-100 bg-black/95 backdrop-blur-md flex items-center justify-center p-4" @click="cerrarModal">
+        <button @click="cerrarModal" class="absolute top-10 right-10 text-white/50 hover:text-white transition-colors p-4 bg-white/5 rounded-full backdrop-blur z-10">✕</button>
+
+        <!-- PDF: Google Docs Viewer con transición entre estados -->
+        <template v-if="modalImagen.esPDF">
+          <div class="w-full max-w-4xl h-[85vh] flex flex-col gap-3" @click.stop>
+
+            <transition name="fade" mode="out-in">
+
+              <!-- Estado: cargando -->
+              <div
+                v-if="pdfEstado === 'cargando'"
+                key="loading"
+                class="w-full flex-1 rounded-2xl flex flex-col items-center justify-center gap-3 bg-white/5"
+              >
+                <div class="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                <span class="text-white/50 text-[10px] font-black uppercase tracking-widest">Cargando PDF...</span>
+              </div>
+
+              <!-- Estado: error -->
+              <div
+                v-else-if="pdfEstado === 'error'"
+                key="error"
+                class="w-full flex-1 rounded-2xl flex flex-col items-center justify-center gap-4 bg-white/5"
+              >
+                <span class="text-white/30 text-4xl">⚠</span>
+                <span class="text-white/50 text-[11px] font-black uppercase tracking-widest">No se pudo cargar el PDF</span>
+                <a
+                  :href="modalImagen.url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-[10px] font-black uppercase tracking-widest transition-colors"
+                >
+                  ↗ Abrir directamente
+                </a>
+              </div>
+
+              <!-- Estado: cargado -->
+              <iframe
+                v-else
+                key="iframe"
+                :src="`https://docs.google.com/viewer?url=${encodeURIComponent(modalImagen.url)}&embedded=true`"
+                class="w-full flex-1 rounded-2xl shadow-2xl border-0 bg-white"
+                allow="fullscreen"
+                @load="onPdfLoad"
+                @error="onPdfError"
+              />
+
+            </transition>
+
+            <a
+              :href="modalImagen.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mx-auto text-[10px] font-black text-white/60 hover:text-white uppercase tracking-widest underline underline-offset-4 transition-colors"
+            >
+              ↗ Abrir PDF en nueva pestaña
+            </a>
+          </div>
+        </template>
+
+        <!-- Imagen normal -->
+        <img
+          v-else
+          :src="modalImagen.url"
+          class="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl ring-1 ring-white/10 select-none"
+          @click.stop
+        />
+
+        <span class="absolute bottom-6 bg-black/50 px-6 py-2 rounded-full text-white/70 text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur">
+          {{ modalImagen.titulo }}
+        </span>
       </div>
     </transition>
 
-    
+  </div>
 
-      
-  </div>  
- </div> 
-<div v-else class="flex justify-center items-center h-screen">
-          <p class="animate-pulse font-black text-slate-300">CARGANDO EXPEDIENTE...</p>
-    </div>
-</template> 
+  <div v-else class="flex justify-center items-center h-screen">
+    <p class="animate-pulse font-black text-slate-300">CARGANDO EXPEDIENTE...</p>
+  </div>
+</template>
 
 <script setup>
 
 import { useAuthStore } from '../stores/auth'
 import CodigoQr from '../components/CodigoQR.vue'
-import {ArrowLeftIcon, PencilSquareIcon, ClipboardDocumentCheckIcon,
-   DocumentArrowDownIcon, MagnifyingGlassPlusIcon, ScaleIcon, PhotoIcon, DocumentTextIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/outline'
-
-
-
+import {
+  ArrowLeftIcon, PencilSquareIcon, ClipboardDocumentCheckIcon,
+  DocumentArrowDownIcon, MagnifyingGlassPlusIcon, ScaleIcon,
+  PhotoIcon, DocumentTextIcon, ArrowTopRightOnSquareIcon
+} from '@heroicons/vue/24/outline'
 
 import { ref, computed, onMounted } from 'vue'
- 
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
@@ -605,10 +639,48 @@ const auth = useAuthStore()
 const modoEdicion = ref(false)
 const drawerSolicitud = ref(false)
 const drawerInspeccion = ref(false)
-const fotoPrincipal = ref({ foto: '', nombre: '', id: null });
+const fotoPrincipal = ref({ foto: '', nombre: '', id: null })
 const modoFormulario = ref('EDICION_NORMAL')
-const modalImagen = ref({ show: false, url: '', titulo: '' })
-const abrirModalImg = (url, titulo) => { modalImagen.value = { show: true, url, titulo } }
+
+// --- Estado del modal PDF ---
+const modalImagen = ref({ show: false, url: '', titulo: '', esPDF: false })
+// 'cargando' | 'listo' | 'error'
+const pdfEstado = ref('cargando')
+
+const cerrarModal = () => {
+  modalImagen.value.show = false
+}
+
+const abrirModalImg = (url, titulo) => {
+  modalImagen.value = { show: true, url, titulo, esPDF: false }
+}
+
+// En tu script — reemplaza la función abrirModalPDF
+const abrirModalPDF = (url, titulo) => {
+  pdfEstado.value = 'cargando'
+
+  let urlCorregida = urlMedia(url)
+
+  // Solo corregir si ES una URL de Cloudinary
+  if (urlCorregida.includes('cloudinary.com')) {
+    urlCorregida = urlCorregida.replace('/image/upload/', '/raw/upload/')
+  }
+
+  modalImagen.value = { show: true, url: urlCorregida, titulo, esPDF: true }
+
+  setTimeout(() => {
+    if (pdfEstado.value === 'cargando') pdfEstado.value = 'listo'
+  }, 800)
+}
+
+const onPdfLoad = () => {
+  pdfEstado.value = 'listo'
+}
+
+const onPdfError = () => {
+  pdfEstado.value = 'error'
+}
+// --- fin estado modal PDF ---
 
 const campoAEditar = ref({ label: '', valor: '', tipo: 'text', opciones: [] })
 const formEdicion = ref({ valor_nuevo: '', justificacion: '' })
@@ -617,8 +689,29 @@ const evidenciaPreview = ref(null)
 const formNuevoObjeto = ref({ descripcion: '', cantidad: 1, estado: 'BUENO' })
 const formNuevoDano = ref({ parte_vehiculo: '', descripcion: '' })
 
+const urlMedia = (path) => {
+  if (!path) return ''
+  if (path.startsWith('http')) return path
+  return `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}${path}`
+}
 
-const abrirPDF = (url) => { if (url !== '#') window.open(url, '_blank'); else alert('Abriendo PDF Simulado') }
+const abrirPDF = (path) => {
+  if (!path) return
+  window.open(urlMedia(path), '_blank')
+}
+
+const esArchivoVisualizablePDF = (archivo) => {
+  if (!archivo) return false
+  const url = archivo.toLowerCase()
+  return (
+    url.endsWith('.pdf') ||
+    url.includes('/documentos/') ||
+    url.includes('/raw/upload/') ||
+    url.includes('documento') ||
+    url.includes('oficio') ||
+    url.includes('factura')
+  )
+}
 
 const abrirEditorNuevaFoto = () => {
   modoEdicion.value = true
@@ -629,12 +722,10 @@ const abrirEditorNuevaFoto = () => {
   drawerSolicitud.value = true
 }
 
-// La función para abrir el cajón en modo Documento
 const abrirEditorDocumento = () => {
   modoEdicion.value = true
   modoFormulario.value = 'NUEVO_DOCUMENTO'
   campoAEditar.value = { label: 'Añadir Documento al Expediente' }
-  // Usaremos valor_nuevo para guardar qué tipo de documento eligió en el select
   formEdicion.value = { valor_nuevo: 'Factura Original', justificacion: '', evidencia: null } 
   evidenciaPreview.value = null
   drawerSolicitud.value = true
@@ -660,7 +751,6 @@ const abrirEditorNuevoObjeto = () => {
   drawerSolicitud.value = true
 }
 
-// Y tu vieja función abrirEditor, pero ahora le decimos que es el Modo Normal:
 const abrirEditorNormal = (label, valorOriginal, idRelacionado = null, tablaDestino = null) => {
   if (!modoEdicion.value) return
   modoFormulario.value = 'EDICION_NORMAL'
@@ -670,13 +760,11 @@ const abrirEditorNormal = (label, valorOriginal, idRelacionado = null, tablaDest
     justificacion: '', 
     evidencia: null 
   }
- 
 
   campoAEditar.value = { 
-    label, // 🚨 Este ahora será 'estado_motor', 'color_actual', etc.
-    titulo: obtenerEtiquetaBonita(label), // Una función simple que retorne "Motor" si recibe "estado_motor"
+    label,
+    titulo: obtenerEtiquetaBonita(label),
     valor: valorOriginal, 
-    // Detección de tipo más robusta
     tipo: OPCIONES_MAP[label] ? 'select' : (CAMPOS_NUMERICOS.includes(label) ? 'number' : 'text'),
     opciones: OPCIONES_MAP[label] || [],
     id_especifico: idRelacionado,
@@ -685,10 +773,6 @@ const abrirEditorNormal = (label, valorOriginal, idRelacionado = null, tablaDest
 
   drawerSolicitud.value = true
 }
-
-
-
-
 
 const OPCIONES_MAP = {
   'estatus_carroceria':    ['BUENO', 'REGULAR', 'MALO', 'DAÑADO'],
@@ -712,7 +796,7 @@ const CAMPOS_NUMERICOS = [
   'cant_llantas_delanteras', 'cant_llantas_traseras', 
   'kilometraje_odometro'
 ]
-// Ejemplo de cómo estructurar los datos para que el Modal sepa qué campo es en la DB
+
 const camposVehiculo = [
   { label: 'marca', titulo: 'Marca', tabla: 'Vehiculo' },
   { label: 'submarca', titulo: 'Submarca', tabla: 'Vehiculo' },
@@ -724,7 +808,7 @@ const camposVehiculo = [
   { label: 'num_serie', titulo: 'Serie (VIN)', tabla: 'Vehiculo' },
   { label: 'numero_motor', titulo: 'Número Motor', tabla: 'Vehiculo' },
   { label: 'repuve', titulo: 'Repuve', tabla: 'Vehiculo' },
-];
+]
 
 const camposMecanica = [
   { label: 'estatus_carroceria', titulo: 'Carroceria', tabla: 'DetallesAuto' },
@@ -732,26 +816,19 @@ const camposMecanica = [
   { label: 'estatus_espejos', titulo: 'Espejos', tabla: 'DetallesAuto' },
   { label: 'estado_motor', titulo: 'Motor', tabla: 'DetallesAuto' },
   { label: 'cant_llantas_delanteras', titulo: 'Llantas Del.', tabla: 'DetallesAuto' },
-  { label: 'cant_llantas_traseras', titulo: 'Llnastas Tras.', tabla: 'DetallesAuto' },
+  { label: 'cant_llantas_traseras', titulo: 'Llantas Tras.', tabla: 'DetallesAuto' },
   { label: 'estado_asientos', titulo: 'Estado Asientos', tabla: 'DetallesAuto' },
   { label: 'cilindros', titulo: 'Cilindros', tabla: 'DetallesAuto' },
   { label: 'cantidad_asientos', titulo: 'Asientos', tabla: 'DetallesAuto' },
   { label: 'tipo_combustible', titulo: 'Tipo Combustible', tabla: 'DetallesAuto' },
   { label: 'presencia_bateria', titulo: 'Tiene bateria?', tabla: 'DetallesAuto' },
-  
-
-
-
-
-];
+]
 
 const camposIngreso = [
   { label: 'folio', titulo: 'Folio', tabla: 'Ingreso' },
   { label: 'tipo_registro', titulo: 'Tipo Registro', tabla: 'Ingreso' },
   { label: 'tipo_servicio', titulo: 'Tipo Servicio', tabla: 'Ingreso' },
-
   { label: 'autoridad_ingreso', titulo: 'Autoridad Ingreso', tabla: 'Ingreso' },
-
   { label: 'lugar_siniestro', titulo: 'Lugar Siniestro', tabla: 'Ingreso' },
   { label: 'motivo_ingreso', titulo: 'Motivo Ingreso', tabla: 'Ingreso' },
   { label: 'fecha_ingreso', titulo: 'Fecha de Ingreso', tabla: 'Ingreso' },
@@ -764,13 +841,12 @@ const camposLiquidos = [
   { label: 'estatus_bolsas_aire', titulo: 'Estatus Bolsas de Aire', tabla: 'DetallesAuto' },
 ]
 
-
 const vehiculo = ref({ marca: '', submarca: '', modelo: '', anio: '', placas: '', num_serie: '', numero_motor: '', color_original: '', color_actual:'', repuve: '' })
-const ingreso = ref({ folio: '', fecha_ingreso: '', tipo_registro: '', tipo_servicio: '', autoridad_ingreso: '', motivo_ingreso: '' , lugar_siniestro: '', })
+const ingreso = ref({ folio: '', fecha_ingreso: '', tipo_registro: '', tipo_servicio: '', autoridad_ingreso: '', motivo_ingreso: '', lugar_siniestro: '' })
 const mecanica = ref({
   estatus_carroceria: 'N/A', estado_motor: 'N/A', tipo_transmision: 'N/A', estatus_aceite_motor: 'N/A', 
   estatus_combustible: 'N/A', estatus_anticongelante: 'N/A', presencia_bateria: 'N/A', estado_espejos: 'BUENO',
-  tipo_combustible: 'N/A', cilindros: 0, cantidad_asientos: 0, estado_asientos: 'N/A',  estatus_bolsas_aire: 'N/A', 
+  tipo_combustible: 'N/A', cilindros: 0, cantidad_asientos: 0, estado_asientos: 'N/A', estatus_bolsas_aire: 'N/A', 
   cant_llantas_delanteras: 0, cant_llantas_traseras: 0, estatus_cristales: 'N/A', estatus_espejos: 'N/A', 
   estatus_odometro: 'N/A', kilometraje_odometro: 0 
 })
@@ -781,72 +857,17 @@ const bitacora = ref([])
 const estatusLegal = ref({})
 const galeriaFotos = ref([])
 
-
-const MAPA_CAMPOS_BD = {
-  // Datos Vehículo
-  'Marca': 'marca',
-  'Submarca': 'submarca',
-  'Modelo': 'modelo',
-  'Año': 'anio',
-  'Placas': 'placas',
-  'Serie (VIN)': 'num_serie',
-  'Número Motor': 'numero_motor', // Corregido
-  'Color Actual': 'color_actual',
-  'Color Original': 'color_original',
-  'Estatus REPUVE': 'repuve',
-
-  // Mecánica
-  'Carrocería': 'estatus_carroceria',
-  'Cristales': 'estatus_cristales',
-  'Espejos': 'estatus_espejos',
-  'Motor': 'estado_motor', // Corregido (en el modelo es estado_motor)
-  'Cilindros': 'cilindros',
-  'Transmisión': 'tipo_transmision',
-  'Tipo Combustible': 'tipo_combustible',
-  'Asientos': 'cantidad_asientos',
-  'Estado Asientos': 'estado_asientos',
-  'Estado Asientos': 'estado_asientos',
-  'Llantas Del.': 'cant_llantas_delanteras', // Corregido
-  'Llantas Tras.': 'cant_llantas_traseras', // Corregido
-  'Odómetro': 'estatus_odometro',
-  'Kilometraje': 'kilometraje_odometro',
-
- // Líquidos
-  'Aceite': 'estatus_aceite_motor', // Corregido
-  'Anticongelante': 'estatus_anticongelante', // Corregido
-  'Nivel Comb.': 'estatus_combustible', // Corregido
-  'Bolsas de Aire': 'estatus_bolsas_aire',
-  'Batería': 'presencia_bateria',
-
-  //fotod
-  'Foto Frontal': 'evidencia_foto_frontal',
-  'Foto Lateral Izquierda': 'evidencia_foto_lateral_izquierda',
-  'Foto Lateral Derecha': 'evidencia_foto_lateral_derecha',
-  'Foto Interior': 'evidencia_foto_interior',
-  'Foto Capó': 'evidencia_foto_capo',
-  'Foto Trasera': 'evidencia_foto_trasera'
-}
-
-const urlMedia = (path) => {
-  if (!path) return ''
-  if (path.startsWith('http')) return path
-  return `${import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'}${path}`
-}
-
 const cargarDatos = async () => {
   try {
     const id = route.params.id
     const { data } = await clienteAxios.get(`ingresos/${id}/`)
     datosIngreso.value = data
-    
 
-    
     console.log("--- SCANNER DE DATOS ---")
     console.log("¿Qué llaves mandó Django?:", Object.keys(data))
     console.log("Contenido de objetos:", data.objetos_personales)
     console.log("--- SCANNER DE MECÁNICA ---")
     console.log("Datos de detalles_auto:", data.detalles_auto)
-   
     console.log("Estatus legal raw:", data.estatus_legales)
     console.log("Factura:", data.factura_original)
     console.log("fotos", data.fotos_evidencia)
@@ -856,7 +877,6 @@ const cargarDatos = async () => {
       console.log("Oficio archivo:", data.estatus_legales[0].documento_oficio)
     }
 
-    // 1. Mapeo de Vehículo
     if (data.vehiculo_detalle) {
       vehiculo.value = {
         id: data.vehiculo_detalle.id,
@@ -873,31 +893,27 @@ const cargarDatos = async () => {
       }
     }
 
-    // 2. Mapeo de Ingreso
     ingreso.value = {
-      id: data.id,                    // ← necesario para el editor
+      id: data.id,
       folio: data.folio,
       fecha_ingreso: new Date(data.fecha_ingreso).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' }),
       tipo_registro: data.tipo_registro,
       tipo_servicio: data.tipo_servicio,
-      autoridad_ingreso: data.autoridad_ingreso,   // ← antes era 'autoridad'
-      lugar_siniestro: data.lugar_siniestro,        // ← faltaba
-      motivo_ingreso: data.motivo_ingreso,          // ← antes era 'motivo'
+      autoridad_ingreso: data.autoridad_ingreso,
+      lugar_siniestro: data.lugar_siniestro,
+      motivo_ingreso: data.motivo_ingreso,
     }
 
-    // 3. Mapeo de Mecánica (Tomando el primer elemento del set)
     if (data.detalles_auto) {
       const d = data.detalles_auto
-      galeriaFotos.value = data.fotos_evidencia || [];
+      galeriaFotos.value = data.fotos_evidencia || []
 
       if (galeriaFotos.value.length > 0) {
-        fotoPrincipal.value = galeriaFotos.value[0]; // Le pasamos el objeto completo, no solo la URL
+        fotoPrincipal.value = galeriaFotos.value[0]
       }
 
-
-     // REEMPLAZA mecanica.value = { ... } por esto:
       mecanica.value = {
-        estatus_carroceria: d.estatus_carroceria || '',    // ← antes era 'carroceria'
+        estatus_carroceria: d.estatus_carroceria || '',
         estatus_cristales: d.estatus_cristales || '',
         estatus_espejos: d.estatus_espejos || '',
         estado_motor: d.estado_motor || '',
@@ -910,7 +926,7 @@ const cargarDatos = async () => {
         cilindros: d.cilindros || '',
         cantidad_asientos: d.cantidad_asientos || '',
         cant_llantas_delanteras: d.cant_llantas_delanteras || '',
-        cant_llantas_traseras: d.cant_llantas_traseras || '',   // ← ojo: el campo en camposMecanica tiene 'cants_' con s
+        cant_llantas_traseras: d.cant_llantas_traseras || '',
         estado_asientos: d.estado_asientos || '',
         estatus_bolsas_aire: d.estatus_bolsas_aire || '',
         estatus_odometro: d.estatus_odometro || '',
@@ -918,19 +934,13 @@ const cargarDatos = async () => {
       }
     }
 
-    // 4. Listas de Objetos y Daños (Asegúrate que los nombres coincidan con tu Serializer)
-    // Cambia esto:
-    objetos.value = data.objetos_personales || [];
+    objetos.value = data.objetos_personales || []
     danos.value = data.registros_danos || []
-    bitacora.value = data.historial_set || [];
+    bitacora.value = data.historial_set || []
 
-    // 5. Unificación de Documentos
     const listaDocs = []
-
-    // 1️⃣ Estatus Legal (primero se obtiene)
     const estatus = data.estatus_legales?.[0]
 
-    // 2️⃣ Factura
     if (data.factura_original) {
       listaDocs.push({ 
         id: 'factura', 
@@ -940,8 +950,8 @@ const cargarDatos = async () => {
       })
     }
 
-    // 3️⃣ Oficio legal (si existe)
     if (estatus?.documento_oficio) {
+      console.log("URL oficio cruda:", estatus.documento_oficio)
       listaDocs.push({
         id: 'oficio',
         nombre_documento: 'Oficio Legal',
@@ -950,7 +960,6 @@ const cargarDatos = async () => {
       })
     }
 
-    // 4️⃣ Mapear datos de estatus legal
     if (estatus) {
       estatusLegal.value = {
         condicion: estatus.condicion_juridica,
@@ -960,15 +969,8 @@ const cargarDatos = async () => {
       }
     }
 
-    // 5️⃣ Guardar documentos
     documentos.value = listaDocs
     console.log("LISTA FINAL DE DOCUMENTOS:", documentos.value)
-
-    
-     /*if (data.vehiculo_detalle?.foto_principal) {
-        fotoPrincipal.value = data.vehiculo_detalle.foto_principal
-      }*/
-    
 
   } catch (error) {
     console.error("Error al cargar:", error)
@@ -978,10 +980,7 @@ const cargarDatos = async () => {
 }
 onMounted(cargarDatos)
 
-
-
 const cerrarEditor = () => { drawerSolicitud.value = false }
-
 
 const obtenerEtiquetaBonita = (label) => {
   const todos = [...camposVehiculo, ...camposMecanica, ...camposLiquidos, ...camposIngreso]
@@ -989,99 +988,80 @@ const obtenerEtiquetaBonita = (label) => {
   return encontrado?.titulo || label
 }
 
-
-
-// Y asegúrate de tener el manejador de la imagen
 const handleEvidencia = (e) => {
   const file = e.target.files[0]
   if (file) {
     evidenciaPreview.value = URL.createObjectURL(file)
-    formEdicion.value.evidencia = file // Aquí guardamos el archivo para el POST de Axios
+    formEdicion.value.evidencia = file
   }
 }
+
 const enviarSolicitud = async () => {
-  // 1. Validaciones básicas
   const requiereJustificacion = ['EDICION_NORMAL', 'FOTO_EXTRA', 'NUEVO_DOCUMENTO']
   if (requiereJustificacion.includes(modoFormulario.value) && !formEdicion.value.justificacion) {
-    alert("Por favor, ingresa una justificación para este movimiento.");
-    return;
+    alert("Por favor, ingresa una justificación para este movimiento.")
+    return
   }
-  // Si es una foto extra o un documento, el archivo es obligatorio
   if ((modoFormulario.value === 'FOTO_EXTRA' || modoFormulario.value === 'NUEVO_DOCUMENTO') && !formEdicion.value.evidencia) {
-    alert("Para este registro, la foto o documento es obligatorio.");
-    return;
+    alert("Para este registro, la foto o documento es obligatorio.")
+    return
   }
 
-  loading.value = true;
-  const formData = new FormData();
+  loading.value = true
+  const formData = new FormData()
 
-  // 2. Empaquetamos los datos comunes
-  formData.append('ingreso_id', route.params.id);
-  formData.append('justificacion', formEdicion.value.justificacion);
-  formData.append('modo', modoFormulario.value); // Le avisamos al backend qué estamos haciendo
+  formData.append('ingreso_id', route.params.id)
+  formData.append('justificacion', formEdicion.value.justificacion)
+  formData.append('modo', modoFormulario.value)
 
-  // 3. Empaquetamos según el MODO seleccionado
   if (modoFormulario.value === 'FOTO_EXTRA') {
-    formData.append('nombre_foto', formEdicion.value.valor_nuevo); // El nombre que le puso el usuario
-    formData.append('archivo', formEdicion.value.evidencia);
+    formData.append('nombre_foto', formEdicion.value.valor_nuevo)
+    formData.append('archivo', formEdicion.value.evidencia)
 
   } else if (modoFormulario.value === 'NUEVO_DANO') {
-    formData.append('parte_vehiculo', formNuevoDano.value.parte_vehiculo);
-    formData.append('descripcion', formNuevoDano.value.descripcion);
-    if (formEdicion.value.evidencia) formData.append('archivo', formEdicion.value.evidencia);
+    formData.append('parte_vehiculo', formNuevoDano.value.parte_vehiculo)
+    formData.append('descripcion', formNuevoDano.value.descripcion)
+    if (formEdicion.value.evidencia) formData.append('archivo', formEdicion.value.evidencia)
 
   } else if (modoFormulario.value === 'NUEVO_OBJETO') {
-    formData.append('descripcion', formNuevoObjeto.value.descripcion);
-    formData.append('cantidad', formNuevoObjeto.value.cantidad);
-    formData.append('estado', formNuevoObjeto.value.estado);
-    if (formEdicion.value.evidencia) formData.append('archivo', formEdicion.value.evidencia);
+    formData.append('descripcion', formNuevoObjeto.value.descripcion)
+    formData.append('cantidad', formNuevoObjeto.value.cantidad)
+    formData.append('estado', formNuevoObjeto.value.estado)
+    if (formEdicion.value.evidencia) formData.append('archivo', formEdicion.value.evidencia)
 
   } else if (modoFormulario.value === 'NUEVO_DOCUMENTO') {
-    formData.append('tipo_documento', formEdicion.value.valor_nuevo); // Factura, Oficio, etc.
-    formData.append('archivo', formEdicion.value.evidencia);
+    formData.append('tipo_documento', formEdicion.value.valor_nuevo)
+    formData.append('archivo', formEdicion.value.evidencia)
 
   } else {
-    // MODO: EDICION_NORMAL (El que ya tenías)
-    formData.append('campo', campoAEditar.value.label);
-    formData.append('valor_nuevo', formEdicion.value.valor_nuevo);
-    formData.append('tabla', campoAEditar.value.tabla || '');
-    formData.append('id_especifico', campoAEditar.value.id_especifico || '');
-    if (formEdicion.value.evidencia) formData.append('archivo', formEdicion.value.evidencia);
+    formData.append('campo', campoAEditar.value.label)
+    formData.append('valor_nuevo', formEdicion.value.valor_nuevo)
+    formData.append('tabla', campoAEditar.value.tabla || '')
+    formData.append('id_especifico', campoAEditar.value.id_especifico || '')
+    if (formEdicion.value.evidencia) formData.append('archivo', formEdicion.value.evidencia)
   }
 
   try {
-    // 4. Disparamos la petición al backend
-    // Nota: Asegúrate de tener esta ruta en tu urls.py del backend
     const response = await clienteAxios.post('ingresos/crear-solicitud-cambio/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
-    });
-
-    // Usamos la variable imprimiéndola:
-    console.log("Éxito desde Django:", response.data);
-
-    alert("Solicitud enviada correctamente. El administrador la revisará pronto.");
-    cerrarEditor();
-    // Opcional: recargar los datos para ver los cambios si el usuario es Admin
-    // cargarDatos(); 
-    
+    })
+    console.log("Éxito desde Django:", response.data)
+    alert("Solicitud enviada correctamente. El administrador la revisará pronto.")
+    cerrarEditor()
   } catch (error) {
-    console.error("Error al enviar solicitud:", error);
-    console.error("Respuesta del servidor:", error.response?.data); // ← agregar
-    alert("Hubo un error al procesar la solicitud. Revisa la consola.");
-} finally {
-    loading.value = false;
+    console.error("Error al enviar solicitud:", error)
+    console.error("Respuesta del servidor:", error.response?.data)
+    alert("Hubo un error al procesar la solicitud. Revisa la consola.")
+  } finally {
+    loading.value = false
   }
-};
-
+}
 
 const obtenerFotoPrincipal = computed(() => {
-  // Si el ingreso tiene fotos registradas, usa la primera, si no, usa la de Unsplash
   return datosIngreso.value?.fotos?.length > 0 
     ? datosIngreso.value.fotos[0].imagen 
     : 'https://images.unsplash.com/photo-1590362891175-9a744426d6b2?w=1000'
 })
-
-
 
 const formInspeccion = ref({
   identificacion_ok: true,
@@ -1092,35 +1072,37 @@ const formInspeccion = ref({
   observaciones_admin: ''
 })
 
+const checksInspeccion = [
+  { model: 'identificacion_ok', label: 'Datos ID (Placas/VIN) correctos' }, 
+  { model: 'inventario_ok', label: 'Inventario físico verificado' },
+  { model: 'estado_fisico_ok', label: 'Daños físicos validados con fotos' },
+  { model: 'documentacion_ok', label: 'Documentación legible' }
+]
 
-const checksInspeccion = [{ model: 'identificacion_ok', label: 'Datos ID (Placas/VIN) correctos' }, 
-  { model: 'inventario_ok', label: 'Inventario físico verificado' }, { model: 'estado_fisico_ok', label: 'Daños físicos validados con fotos' },
-   {model: 'documentacion_ok', label: 'Documentación legible'}]
-
-const RESULTADOS_INS = [{ value: 'APROBADO', label: 'Aprobado' }, { value: 'RECHAZADO', label: 'Rechazado' }, { value: 'OBSERVADO', label: 'Aprobado con Obs.' }]
+const RESULTADOS_INS = [
+  { value: 'APROBADO', label: 'Aprobado' },
+  { value: 'RECHAZADO', label: 'Rechazado' },
+  { value: 'OBSERVADO', label: 'Aprobado con Obs.' }
+]
 
 const guardarInspeccion = async () => {
   try {
-    // 1. Obtener y limpiar el ID del ingreso
     const idIngreso = Array.isArray(route.params.id) 
       ? route.params.id[0] 
       : route.params.id
 
-    if (!idIngreso) return alert('No hay ID de ingreso');
-    if (!auth.user_id) return alert('No hay usuario logueado');
+    if (!idIngreso) return alert('No hay ID de ingreso')
+    if (!auth.user_id) return alert('No hay usuario logueado')
 
-    // 2. Validar si ya existe (para evitar duplicados en OneToOne)
-    const res = await clienteAxios.get(`/inspecciones/?ingreso=${idIngreso}`);
+    const res = await clienteAxios.get(`/inspecciones/?ingreso=${idIngreso}`)
     if (res.data.length > 0) {
-      alert('⚠️ Ya existe una inspección para este ingreso');
-      return;
+      alert('⚠️ Ya existe una inspección para este ingreso')
+      return
     }
 
-    // 3. Construir el Payload LIMPIO (Sin el operador spread ...)
-    // Esto asegura que Django reciba exactamente lo que espera
     const payload = {
-      ingreso: Number(idIngreso),     // Nombre estándar
-      ingreso_id: Number(idIngreso),  // Nombre explícito para la DB
+      ingreso: Number(idIngreso),
+      ingreso_id: Number(idIngreso),
       administrador: Number(auth.user_id),
       resultado: formInspeccion.value.resultado,
       observaciones_admin: formInspeccion.value.observaciones_admin,
@@ -1128,24 +1110,20 @@ const guardarInspeccion = async () => {
       inventario_ok: formInspeccion.value.inventario_ok,
       estado_fisico_ok: formInspeccion.value.estado_fisico_ok, 
       documentacion_ok: formInspeccion.value.documentacion_ok
-    };
+    }
 
-    console.log("Enviando payload:", payload);
+    console.log("Enviando payload:", payload)
+    await clienteAxios.post('/inspecciones/', payload)
 
-    // 4. Único envío a la API
-    await clienteAxios.post('/inspecciones/', payload);
-
-    // 5. Éxito
-    drawerInspeccion.value = false;
-    alert('✅ Inspección guardada y firmada exitosamente 🔥');
+    drawerInspeccion.value = false
+    alert('✅ Inspección guardada y firmada exitosamente 🔥')
 
   } catch (e) {
-    console.error("Error detallado:", e.response?.data);
-    // Si Django nos dice qué campo falta, lo mostramos
-    const errorMsg = e.response?.data ? JSON.stringify(e.response.data) : 'Error de conexión';
-    alert('❌ Error al guardar: ' + errorMsg);
+    console.error("Error detallado:", e.response?.data)
+    const errorMsg = e.response?.data ? JSON.stringify(e.response.data) : 'Error de conexión'
+    alert('❌ Error al guardar: ' + errorMsg)
   }
-};
+}
 </script>
 
 <style scoped>
@@ -1153,4 +1131,7 @@ const guardarInspeccion = async () => {
 .drawer-left-enter-from, .drawer-left-leave-to { transform: translateX(-100%); }
 .drawer-enter-active, .drawer-leave-active { transition: transform 0.4s ease; }
 .drawer-enter-from, .drawer-leave-to { transform: translateX(100%); }
-</style>  
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s ease, transform 0.3s ease; }
+.fade-enter-from { opacity: 0; transform: scale(0.97); }
+.fade-leave-to { opacity: 0; transform: scale(1.02); }
+</style>
